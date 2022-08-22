@@ -8,31 +8,59 @@ import {
   Code,
   Grid,
   theme,
+  Flex,
+  Container,
+  Button,
+  ButtonGroup,
+  Heading,
+  Spacer,
+  Show,
 } from "@chakra-ui/react"
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import { Logo } from "./Logo"
+import Navigation from "./components/Navigation"
+import Post from "./components/Post"
+import { Navigate, Route, Routes } from "react-router-dom"
+import Login from "./pages/login/Login"
+import Dashboard from "./pages/dashboard/Dashboard"
+import Home from "./pages/dashboard/home/Home"
+import Companies from "./pages/dashboard/companies/Companies"
+import Jobs from "./pages/dashboard/jobs/Jobs"
+import { AuthContextProvider } from "./store/auth-context"
+import ProtectedRoute from "./components/ProtectedRoute"
+import { ToastContainer } from "react-toastify"
+import Profile from "./pages/dashboard/profile/Profile"
+import Job from "./pages/dashboard/job/Job"
+import Register from "./pages/register/Register"
 
-export const App = () => (
-  <ChakraProvider theme={theme}>
-    <Box textAlign="center" fontSize="xl">
-      <Grid minH="100vh" p={3}>
-        <ColorModeSwitcher justifySelf="flex-end" />
-        <VStack spacing={8}>
-          <Logo h="40vmin" pointerEvents="none" />
-          <Text>
-            Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
-          </Text>
-          <Link
-            color="teal.500"
-            href="https://chakra-ui.com"
-            fontSize="2xl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn Chakra
-          </Link>
-        </VStack>
-      </Grid>
-    </Box>
-  </ChakraProvider>
-)
+export const App = () => {
+  React.useEffect(() => {
+  }, [])
+  return (
+    <ChakraProvider theme={theme}>
+      <AuthContextProvider>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard/home" replace />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }>
+            <Route path="/dashboard/home" element={<Home />} />
+            <Route path="/dashboard/companies" element={<Companies />} />
+            <Route path="/dashboard/jobs" element={<Jobs />} />
+            <Route path="/dashboard/job/:id" element={<Job />} />
+            <Route path="/dashboard/profile/:id" element={<Profile />} />
+          </Route>
+
+        </Routes>
+      </AuthContextProvider>
+      {/**/}
+      <ToastContainer />
+
+    </ChakraProvider>
+  )
+}
+
