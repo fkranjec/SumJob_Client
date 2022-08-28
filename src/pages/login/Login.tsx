@@ -5,34 +5,40 @@ import { AuthContext, AuthConsumer } from '../../store/auth-context';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
+
+const LOGIN = gql`
+    mutation login($username: String!, $password: String!){
+        login(username: $username, password: $password) {
+            token
+            username
+            id
+        }
+    }
+`
 
 const Login = () => {
     const [user, setUser] = useState({ username: "", password: "" });
     const [loginUser, { loading }] = useMutation(LOGIN, {
         update(_, result) {
-            console.log(result);
             const { token } = result.data.login;
             authContext.login(token);
             toast.success("Login Successful");
         },
         onError(err) {
-            console.log(err.graphQLErrors[0].message);
             toast.error(err.graphQLErrors[0].message);
         },
         variables: { username: user.username, password: user.password }
     })
     const authContext = React.useContext(AuthContext);
-    useEffect(() => {
-        console.log(authContext.token);
-        console.log(AuthConsumer);
-        return () => {
-        }
-    }, [])
 
     const handleLogin = () => {
         loginUser();
     }
 
+    const { username } = useParams();
+    useEffect(() => {
+    }, [])
     return (
         <Center width='100%' bg='blackAlpha.200' height='100vh'>
             <Container bg='blackAlpha.400' maxW='1200px' h='800px' borderRadius='10px'>
@@ -50,14 +56,6 @@ const Login = () => {
     )
 }
 
-const LOGIN = gql`
-    mutation login($username: String!, $password: String!){
-        login(username: $username, password: $password) {
-            token
-            username
-            id
-        }
-    }
-`
+
 
 export default Login

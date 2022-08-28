@@ -5,6 +5,7 @@
   "dependencies": {
     "@apollo/client": "^3.6.9",
     "@apollo/react-hooks": "^4.0.0",
+    "@chakra-ui/icons": "^2.0.9",
     "@chakra-ui/react": "^2.2.4",
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
@@ -29,6 +30,7 @@
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.0.8",
+    "react-transition-group": "^4.4.5",
     "typescript": "^4.6.3",
     "web-vitals": "^0.2.2"
   },

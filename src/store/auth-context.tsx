@@ -15,7 +15,6 @@ export const AuthContextProvider = (props: any): ReactElement => {
 
     const [token, setToken] = useState<string | null>(tok ? tok : '')
     const [user, setUser] = useState<any>(tok ? jwt(tok) : {})
-    console.log(user);
     const navigate = useNavigate();
 
     const userIsLogedIn = !!token;
@@ -24,6 +23,12 @@ export const AuthContextProvider = (props: any): ReactElement => {
         localStorage.setItem('token', token);
         setToken(token);
         navigate("/dashboard/home");
+    }
+
+    const register = (token: string) => {
+        localStorage.setItem('token', token);
+        setToken(token);
+        navigate("/login");
     }
 
     const logout = () => {

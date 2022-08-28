@@ -4,38 +4,38 @@ import { scrollBarStyle } from '../../../utils/styles'
 
 import { SubscriptionResult, useMutation, useQuery, useSubscription } from '@apollo/client';
 import gql from 'graphql-tag';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ProfileCard from '../../../components/ProfileCard';
 import Layout from '../../../components/Layout';
 import NewPost from '../../../components/NewPost';
 import Rooms from '../../../components/Chat/Rooms';
+import { AuthContext } from '../../../store/auth-context';
 
 const SAVE_POST = gql`
-    mutation createP($body: String!){
-        createPost(body: $body) {
-            id
-            body
-            username
-        }
+   query getJobs{
+    getJobs{
+        id
     }
+   }
 `;
 
 const LATEST_POSTS = gql`
-    subscription newPost{
-        postCreated {
-            body
-            username 
+    query getJobs{
+        getJobs{
+            id
         }
     }
 `;
 
 const FETCH_POSTS_QUERY = gql`
-    {
-        getPosts {
-        id
-        body
-        createdAt
-        username
+    query getJobs{
+        getJobs {
+            id
+            name
+            description
+            company{
+                id
+            }
     }
 }
 `
@@ -56,39 +56,43 @@ const Home = () => {
 
     const [postBody, setPostBody] = useState('');
 
-    const [savePost, { error }] = useMutation<
+    const authContext = useContext(AuthContext);
+
+    /*const [savePost, { error }] = useMutation<
         { createPost: PostInventory }, { body: string }
     >(SAVE_POST, {
         variables: { body: postBody }
-    });
+    });*/
 
-    const subscription: SubscriptionResult = useSubscription(LATEST_POSTS);
+    //const subscription: SubscriptionResult = useSubscription(LATEST_POSTS);
 
     const handleNewPost = async () => {
         setIsLoading(true);
-        await savePost({ variables: { body: postBody } });
+        //await savePost({ variables: { body: postBody } });
         setPostBody('');
         setIsLoading(false);
     }
 
     useEffect(() => {
+
         if (!loading) {
+            console.log(data);
             setIsLoading(false);
         }
-    }, [subscription])
+    }, [data])
     return (
         <Layout>
 
             <Layout.Left>
-                <ProfileCard username='fkranjec' firstName='Filip' lastName='Kranjec' />
+                <ProfileCard id={authContext.user.id} />
             </Layout.Left>
 
             <Layout.Mid>
                 <VStack flexDirection='column-reverse'>
 
                     {loading && <Spinner></Spinner>}
-                    {!loading && data.getPosts.map((post: any) => (
-                        <Post title={post.body} id={post.id} key={post.id} />
+                    {!loading && data.getJobs.map((job: any) => (
+                        <Post title={job.description} id={job.id} key={job.name} />
                     ))}
                     {!loading && <NewPost title='NEW POST in progress...' />}
 

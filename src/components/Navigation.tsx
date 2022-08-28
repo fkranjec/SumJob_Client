@@ -1,16 +1,16 @@
 import { Flex, Heading, ButtonGroup, Button, Box, Circle, Text, Menu, MenuButton, MenuItem, MenuList, Show } from '@chakra-ui/react';
-import React, { FC, useEffect } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import { FaHamburger } from 'react-icons/fa';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ColorModeSwitcher } from '../ColorModeSwitcher';
-import { AuthConsumer } from '../store/auth-context';
+import { AuthConsumer, AuthContext } from '../store/auth-context';
 
 const Navigation: FC = () => {
-
     const outlet = useLocation();
     useEffect(() => {
-        console.log(outlet);
     }, []);
+
+
 
     return (
         <AuthConsumer>
