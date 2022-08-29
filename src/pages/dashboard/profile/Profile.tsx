@@ -71,7 +71,7 @@ const Profile = () => {
     return (
         <Layout>
             <Layout.Left>
-                <ProfileCard id={id}></ProfileCard>
+                <ProfileCard id={id} username={data?.getUser.username}></ProfileCard>
             </Layout.Left>
             <Layout.Mid>
                 <VStack>

@@ -1,15 +1,16 @@
-import { Container, Flex, Show, VStack, Text, Input, useColorMode, Spinner, Spacer, Button, ScaleFade, Circle, Box } from '@chakra-ui/react'
+import { VStack, Text, Spinner, Button } from '@chakra-ui/react'
 import Post from '../../../components/Post'
-import { scrollBarStyle } from '../../../utils/styles'
 
-import { SubscriptionResult, useMutation, useQuery, useSubscription } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProfileCard from '../../../components/ProfileCard';
 import Layout from '../../../components/Layout';
 import NewPost from '../../../components/NewPost';
 import Rooms from '../../../components/Chat/Rooms';
-import { AuthContext } from '../../../store/auth-context';
+import { useOutletContext } from 'react-router-dom';
+import { IProfileShort } from '../Dashboard';
+import InfiniteScroll from 'react-infinite-scroller'
 
 const SAVE_POST = gql`
    query getJobs{
@@ -28,16 +29,16 @@ const LATEST_POSTS = gql`
 `;
 
 const FETCH_POSTS_QUERY = gql`
-    query getJobs{
-        getJobs {
+    query GetJobs($cursor:ID, $limit: Int) {
+        getJobs(cursor:$cursor, limit: $limit) {
             id
             name
             description
             company{
                 id
             }
+        }
     }
-}
 `
 
 
@@ -50,13 +51,13 @@ interface PostInventory {
 const Home = () => {
 
 
-    const { loading, data } = useQuery(FETCH_POSTS_QUERY);
+    const { loading, data, fetchMore } = useQuery(FETCH_POSTS_QUERY, { variables: { cursor: "", limit: 1 } });
 
     const [isLoading, setIsLoading] = useState(true);
 
     const [postBody, setPostBody] = useState('');
 
-    const authContext = useContext(AuthContext);
+    const authContext = useOutletContext<IProfileShort>()
 
     /*const [savePost, { error }] = useMutation<
         { createPost: PostInventory }, { body: string }
@@ -69,6 +70,9 @@ const Home = () => {
     const handleNewPost = async () => {
         setIsLoading(true);
         //await savePost({ variables: { body: postBody } });
+
+
+
         setPostBody('');
         setIsLoading(false);
     }
@@ -76,38 +80,55 @@ const Home = () => {
     useEffect(() => {
 
         if (!loading) {
+            console.log(authContext);
             console.log(data);
             setIsLoading(false);
         }
-    }, [data])
+    }, [data, fetchMore])
     return (
         <Layout>
 
             <Layout.Left>
-                <ProfileCard id={authContext.user.id} />
+                <ProfileCard id={authContext?.id} username={authContext?.username} />
             </Layout.Left>
 
             <Layout.Mid>
                 <VStack flexDirection='column-reverse'>
+                    <InfiniteScroll pageStart={0} loadMore={() => {
+                        fetchMore({
+                            updateQuery: (prev, { fetchMoreResult }) => {
+                                const prevEntry = prev.entry;
+                                const newJobs = fetchMoreResult.getJobs;
+                                const newCursor = newJobs[newJobs.length - 1].id
+                                return {
+                                    getJobs: [...newJobs, ...prev.getJobs],
+                                    __typename: prev.__typename,
+                                    cursor: newCursor
+                                }
+                            }, variables: { cursor: "", limit: 3 }
+                        });
+                        setIsLoading(false);
+                    }} hasMore={true || false} loader={<Spinner></Spinner>}>
+                        {!loading && data.getJobs.map((job: any) => (
+                            <Post title={job.description} id={job.id} key={job.name} />
+                        ))}
+                    </InfiniteScroll>
 
-                    {loading && <Spinner></Spinner>}
-                    {!loading && data.getJobs.map((job: any) => (
-                        <Post title={job.description} id={job.id} key={job.name} />
-                    ))}
+
                     {!loading && <NewPost title='NEW POST in progress...' />}
-
+                    <Button onClick={handleNewPost}>TEST</Button>
                 </VStack>
             </Layout.Mid>
 
             <Layout.Right>
 
-                <Rooms />
+                <Rooms id={authContext?.id} />
                 <Text maxW='unset'>
                     Poruke ako postoje
                 </Text>
             </Layout.Right>
 
-        </Layout>
+        </Layout >
     )
 }
 
