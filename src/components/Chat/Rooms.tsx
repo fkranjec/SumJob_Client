@@ -31,7 +31,7 @@ const Rooms = (props: Rooms) => {
     return (
         <Container p={3} bg='blackAlpha.200'>
             <VStack>
-                {rooms.map((room) =>
+                {rooms?.map((room) =>
                     <Chat key={room.id} id={room.id}></Chat>
                 )}
             </VStack>

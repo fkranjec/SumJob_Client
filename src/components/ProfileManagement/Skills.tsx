@@ -12,8 +12,8 @@ const Skills = (props: Props) => {
     }
     return (
         <>
-            <VStack bg='tomato' h='300px' borderRadius='20px' w='100%'>
-                <HStack p='3' w='100%' bg='pink' h='50px' justifyContent='space-between' borderTopRadius='20px'>
+            <VStack bg='blackAlpha.200' h='300px' borderRadius='20px' w='100%'>
+                <HStack p='3' w='100%' bg='tomato' h='50px' justifyContent='space-between' borderTopRadius='20px'>
                     <Text>Skills</Text>
                     <EditIcon onClick={onOpen} />
                 </HStack>

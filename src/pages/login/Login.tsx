@@ -20,23 +20,18 @@ const LOGIN = gql`
 const Login = () => {
     const [user, setUser] = useState({ username: "", password: "" });
     const [loginUser, { loading }] = useMutation(LOGIN, {
-        update(_, result) {
-            const { token } = result.data.login;
+        variables: { username: user.username, password: user.password }, onCompleted: (res) => {
+            console.log(res)
+            const { token } = res.login;
             authContext.login(token);
             toast.success("Login Successful");
-        },
-        onError(err) {
-            toast.error(err.graphQLErrors[0].message);
-        },
-        variables: { username: user.username, password: user.password }
+        }
     })
     const authContext = React.useContext(AuthContext);
 
     const handleLogin = () => {
         loginUser();
     }
-
-    const { username } = useParams();
     useEffect(() => {
     }, [])
     return (

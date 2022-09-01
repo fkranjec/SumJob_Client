@@ -1,11 +1,10 @@
 import * as React from "react"
-import { ChakraProvider, theme } from "@chakra-ui/react"
+import { ChakraProvider, Spinner, theme } from "@chakra-ui/react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
 
 import Login from "./pages/login/Login"
-import Dashboard from "./pages/dashboard/Dashboard"
-import Home from "./pages/dashboard/home/Home"
+
 import Companies from "./pages/dashboard/companies/Companies"
 import Jobs from "./pages/dashboard/jobs/Jobs"
 import { AuthContextProvider } from "./store/auth-context"
@@ -15,6 +14,9 @@ import Job from "./pages/dashboard/job/Job"
 import Register from "./pages/register/Register"
 import Landing from "./pages/landing/Landing"
 import RegisterCompany from "./pages/register-company/RegisterCompany"
+
+const Dashboard = React.lazy(() => import("./pages/dashboard/Dashboard"))
+const Home = React.lazy(() => import("./pages/dashboard/home/Home"))
 
 export const App = () => {
   return (
@@ -28,10 +30,13 @@ export const App = () => {
           <Route path="/landing" element={<Landing />} />
           <Route path="/dashboard" element={
             <ProtectedRoute>
-              <Dashboard />
+              <React.Suspense fallback={<Spinner></Spinner>}>
+                <Dashboard />
+              </React.Suspense>
             </ProtectedRoute>
           }>
-            <Route path="/dashboard/home" element={<Home />} />
+            <Route index element={<React.Suspense fallback={<Spinner></Spinner>}><Home /></React.Suspense>} />
+            <Route path="/dashboard/home" element={<React.Suspense fallback={<Spinner></Spinner>}><Home /></React.Suspense>} />
             <Route path="/dashboard/companies" element={<Companies />} />
             <Route path="/dashboard/jobs" element={<Jobs />} />
             <Route path="/dashboard/job/:id" element={<Job />} />

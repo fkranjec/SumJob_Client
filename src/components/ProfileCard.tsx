@@ -1,4 +1,4 @@
-import { Box, Circle, Text, VStack } from '@chakra-ui/react'
+import { Avatar, Box, Button, Circle, Text, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -29,12 +29,12 @@ export interface IProfileShort {
 const ProfileCard: React.FC<ProfileCardProps> = (props: ProfileCardProps) => {
     const navigate = useNavigate();
     return (
-        <Box height='500px' width='80%' borderRadius='20px' bg='blackAlpha.200'>
+        <Box height='500px' width='90%' borderRadius='10px' bg='blackAlpha.200'>
             <VStack p={7}>
-                <Circle onClick={() => { navigate('/dashboard/profile/' + props?.id) }} size='50px' borderRadius='50px' bg='blackAlpha.200' />
+                <Avatar onClick={() => { navigate('/dashboard/profile/' + props?.id) }} src={props.image} />
                 <Text>{props?.id}</Text>
                 <Text>{props?.username}</Text>
-
+                <Button>Jobs applied</Button>
             </VStack>
         </Box>
 

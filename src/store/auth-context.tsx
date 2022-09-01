@@ -7,7 +7,8 @@ export const AuthContext: Context<any> = createContext({
     user: {},
     isLoggedIn: false,
     login: (token: string) => { },
-    logout: () => { }
+    logout: () => { },
+    register: () => { }
 })
 
 export const AuthContextProvider = (props: any): ReactElement => {
@@ -22,17 +23,20 @@ export const AuthContextProvider = (props: any): ReactElement => {
     const login = (token: string) => {
         localStorage.setItem('token', token);
         setToken(token);
-        navigate("/dashboard/home");
+        setUser(jwt(token));
+        navigate("/dashboard");
     }
 
     const register = (token: string) => {
         localStorage.setItem('token', token);
         setToken(token);
+        setUser(jwt(tok))
         navigate("/login");
     }
 
     const logout = () => {
-        setToken("")
+        localStorage.removeItem('token')
+        setToken("");
     }
 
     const authProvider = {
@@ -40,8 +44,10 @@ export const AuthContextProvider = (props: any): ReactElement => {
         user: user,
         isLoggedIn: userIsLogedIn,
         login: login,
-        logout: logout
+        logout: logout,
+        register: register
     }
+
 
     return <AuthContext.Provider value={authProvider}>{props.children}</AuthContext.Provider>
 }

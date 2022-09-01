@@ -1,11 +1,14 @@
-import { Center, VStack } from '@chakra-ui/react'
-import React, { useContext, useEffect, useState } from 'react'
+import { Center, Heading, Spinner, VStack } from '@chakra-ui/react'
+import React, { lazy, Suspense, useContext, useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import Navigation from '../../components/Navigation'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import gql from 'graphql-tag'
 import { AuthContext } from '../../store/auth-context'
-import { useQuery } from '@apollo/client'
+import { useQuery, useSubscription } from '@apollo/client'
+import { toast } from 'react-toastify'
+import { IUserDetails } from '../../components/ProfileManagement/UserDetails'
+
+const Navigation = lazy(() => import('../../components/Navigation'))
 export interface IProfileShort {
     id: string
     username: string
@@ -45,33 +48,61 @@ const GET_USER = gql`
     }
 `;
 
+const NOTIFICATION = gql`
+    subscription UserApplied($userId: ID!) {
+        userApplied(userId: $userId) {
+            user{
+                username
+            }
+            job {
+                name
+            }
+        }
+    }
+`
+
+function useForceUpdate() {
+    const [value, setValue] = useState(0);
+    return () => setValue(value => value + 1)
+}
+
 const Dashboard = () => {
     const location = useLocation();
-    const auth = useContext(AuthContext);
-    const [user, setUser] = useState();
-    const { data, loading
-    } = useQuery(GET_USER, { variables: { userId: auth.user.id } })
+    const { user } = useContext(AuthContext);
+    const forceUpdate = useForceUpdate();
+    const { loading, data, error } = useQuery(GET_USER, {
+        onCompleted: () => { console.log("gotovo"); forceUpdate() },
+        variables: { userId: user.id }
+    })
+    const subscription = useSubscription(NOTIFICATION, {
+        onSubscriptionData: (data) => {
+            console.log("test");
+            toast.info(`${data.subscriptionData.data.userApplied.user.username} applied to ${data.subscriptionData.data.userApplied.job.name}`)
+        },
+        variables: { userId: data?.getUser.id }
+    })
+
+
 
     useEffect(() => {
-        if (!loading) {
-            console.log(auth);
-            console.log(data);
-            setUser(data)
-        }
-    }, [loading, data])
+    }, [data?.getUser])
     return (
-        <VStack>
-            <Navigation />
-            <TransitionGroup component={null}>
-                <CSSTransition key={location.key} classNames="fade" timeout={300}>
-                    <Center maxW='1600px' w='100%' h='calc(100vh - 70px)' overflowY='hidden' >
-                        <Outlet context={data?.getUser} />
-                    </Center>
-                </CSSTransition>
-            </TransitionGroup>
-        </VStack>
-
-
+        <div>
+            {!data && <Center h='100vh'><Spinner></Spinner></Center>}
+            {data && (
+                <VStack>
+                    <Navigation id={data?.getUser.id} image={data?.getUser.image} />
+                    <TransitionGroup component={null}>
+                        <CSSTransition key={location.key} classNames="fade" timeout={300}>
+                            <Center maxW='1600px' w='100%' h='calc(100vh - 70px)' overflowY='hidden' >
+                                <Outlet context={data?.getUser} />
+                            </Center>
+                        </CSSTransition>
+                    </TransitionGroup>
+                </VStack >
+            )
+            }
+        </div>
     )
 }
 

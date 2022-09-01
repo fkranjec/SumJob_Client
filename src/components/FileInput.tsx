@@ -139,6 +139,7 @@ const FileInput = (props: any) => {
                             >
                                 <Box height="16" width="12" position="relative">
                                 </Box>
+
                                 <Stack p="8" textAlign="center" spacing="1">
                                     <Heading fontSize="lg" color="gray.700" fontWeight="bold">
                                         Drop images here

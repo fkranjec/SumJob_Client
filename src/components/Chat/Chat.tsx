@@ -1,11 +1,12 @@
 import { SubscriptionResult, useMutation, useQuery, useSubscription } from '@apollo/client';
-import { Container, Circle, VStack, Input, Button, Box, Center, Text } from '@chakra-ui/react';
+import { Container, Circle, VStack, Input, Button, Box, Center, Text, Avatar } from '@chakra-ui/react';
 import gql from 'graphql-tag';
 import React, { useEffect, useRef, useState } from 'react'
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { useOutletContext } from 'react-router-dom';
 import { IProfileShort } from '../../pages/dashboard/Dashboard';
 import { messageLeft, messageRight, scrollBarStyle } from '../../utils/styles';
+import Rooms from './Rooms';
 import TextMessage from './TextMessage';
 
 interface Chat {
@@ -23,6 +24,21 @@ interface GetMessagesQuery {
     }]
 }
 
+interface GetRoomQuery {
+    getRoom: {
+        userID1: {
+            id: string,
+            username: string
+            image: string
+        },
+        userID2: {
+            id: string,
+            username: string
+            image: string
+        }
+    }
+}
+
 const GET_MESSAGES = gql`
     query Messages($room: ID!) {
         messages(room: $room) {
@@ -35,6 +51,24 @@ const GET_MESSAGES = gql`
         }
     }
 `
+
+const GET_ROOM = gql`
+    query GetRoom($roomId: ID!) {
+        getRoom(roomId: $roomId) {
+            userID1 {
+                id
+                username
+                image
+            }
+            userID2 {
+                id
+                username
+                image
+            }
+            
+        }
+    }
+`;
 
 const SEND_MESSAGE = gql`
     mutation Message($content: String!, $author: ID!, $room: ID!) {
@@ -63,6 +97,7 @@ const Chat = (props: Chat) => {
     const [newMessage, setNewMessage] = useState('');
     const auth = useOutletContext<IProfileShort>();
     const { data, loading } = useQuery<GetMessagesQuery>(GET_MESSAGES, { variables: { room: props.id } })
+    const getRoom = useQuery<GetRoomQuery>(GET_ROOM, { variables: { roomId: props.id } })
     const [message] = useMutation(SEND_MESSAGE, { variables: { content: newMessage, author: auth.id, room: props.id } })
 
     let bottomRef = useRef(null);
@@ -108,11 +143,12 @@ const Chat = (props: Chat) => {
             bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
         }
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, [loading])
+    }, [loading, getRoom.loading])
     return (
         <Container p={3} bg='blackAlpha.100' >
             <Box display='flex' justifyContent='space-between' flexDirection='row'>
-                <Circle size='50px' borderRadius='50px' bg='blackAlpha.200' />
+                <Avatar src={getRoom.data?.getRoom.userID1.id === auth.id ? getRoom.data?.getRoom.userID2.image : getRoom?.data?.getRoom.userID1.image}></Avatar>
+                <Text>{auth.id === getRoom?.data?.getRoom.userID1.id ? getRoom?.data?.getRoom.userID2.username : getRoom?.data?.getRoom.userID1.username}</Text>
                 {
                     expanded ? (<Center><FaChevronUp onClick={() => setExpanded(false)} /></Center>) : (<Center><FaChevronDown onClick={() => setExpanded(true)} /></Center>)
                 }
