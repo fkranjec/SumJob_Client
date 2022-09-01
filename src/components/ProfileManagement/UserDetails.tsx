@@ -4,6 +4,8 @@ import { EditIcon } from '@chakra-ui/icons'
 import ImageUploading, { ImageListType } from 'react-images-uploading'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/client'
+import { Autocomplete, StandaloneSearchBox } from '@react-google-maps/api'
+import { useTranslation } from 'react-i18next'
 
 const UPLOAD_IMAGE = gql`
     mutation UploadImage($file: Upload!, $userId: ID!) {
@@ -29,10 +31,16 @@ export interface IUserDetails {
 }
 
 const UserDetails = (props: IUserDetails) => {
+    const { t } = useTranslation('common')
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [image, setImage] = useState<ImageListType>([]);
 
     const [uploadImage] = useMutation(UPLOAD_IMAGE);
+    let autoComplete = null;
+    let searchBox;
+    const onLoad = ref => searchBox = ref;
+
+    const onPlacesChanged = () => console.log(searchBox);
     const handleSave = (e) => {
         let formData = new FormData();
         formData.append('file', e.target.files[0]);
@@ -46,8 +54,9 @@ const UserDetails = (props: IUserDetails) => {
     }
     return (
         <>
+
             <VStack bg='blackAlpha.200' h='250px' borderRadius='20px' w='100%'>
-                <HStack p='3' w='100%' bg='tomato' h='50px' justifyContent='space-between' borderTopRadius='20px'>
+                <HStack p='3' w='100%' bg=' rgba(255,134,38,1.00)' h='50px' justifyContent='space-between' borderTopRadius='20px'>
                     <Text>User details</Text>
                     <EditIcon onClick={onOpen} />
                 </HStack>
@@ -57,14 +66,17 @@ const UserDetails = (props: IUserDetails) => {
                     <Text>Last name: {props.lastName}</Text>
                     <Text>City: {props.address?.city}</Text>
                     <Text>Street: {props.address?.city}</Text>
+                    <StandaloneSearchBox onLoad={onLoad} onPlacesChanged={onPlacesChanged}>
+                        <Input></Input>
+                    </StandaloneSearchBox>
                 </VStack>
             </VStack>
-            <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={true}>
+            <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
 
                     <ModalHeader>
-                        UserDetails
+                        {t('userDetails')}
                     </ModalHeader>
                     <ModalBody>
                         <form encType='multipart/form-data'>
@@ -84,10 +96,11 @@ const UserDetails = (props: IUserDetails) => {
                         </ImageUploading>
                         <Text>Address</Text>
                         <Input></Input>
+
                     </ModalBody>
                     <ModalFooter>
-                        <Button onClick={onClose}>Close</Button>
-                        <Button onClick={handleSave}>Save</Button>
+                        <Button onClick={onClose}>{t('modal.close')}</Button>
+                        <Button onClick={handleSave}>{t('modal.save')}</Button>
                     </ModalFooter>
                 </ModalContent>
 

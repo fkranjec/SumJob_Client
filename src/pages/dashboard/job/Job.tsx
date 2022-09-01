@@ -6,6 +6,7 @@ import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import { useOutletContext, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Layout from '../../../components/Layout';
+import Map from '../../../components/Map';
 import ProfileCard, { IProfileShort } from '../../../components/ProfileCard';
 
 const GET_JOB = gql`
@@ -65,7 +66,6 @@ const APPLY_TO_JOB = gql`
 const Job = () => {
     const { id } = useParams();
     const { data, loading, error } = useQuery(GET_JOB, { variables: { jobId: id } })
-
     const auth = useOutletContext<IProfileShort>();
     const [applyToJob] = useMutation(APPLY_TO_JOB, { variables: { jobId: id, userId: auth.id } })
     const handleApply = () => {
@@ -120,17 +120,7 @@ const Job = () => {
             <Layout.Right>
                 <VStack w='100%' ml='20px'>
                     <Container w='100%' borderRadius='10px' p={0} h='fit-content'>
-                        <MapContainer style={{ height: '500px', width: '100%', borderRadius: '10px' }} center={[45.9025034, 16.8455657]} zoom={13} scrollWheelZoom={true}>
-                            <TileLayer
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
-                            <Marker position={[45.9025034, 16.8455657]}>
-                                <Popup>
-                                    A pretty CSS3 popup. <br /> Easily customizable.
-                                </Popup>
-                            </Marker>
-                        </MapContainer>
+                        <Map />
                     </Container>
                 </VStack>
             </Layout.Right>

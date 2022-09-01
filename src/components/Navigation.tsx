@@ -1,10 +1,11 @@
-import { Flex, Heading, ButtonGroup, Button, Box, Circle, Text, Menu, MenuButton, MenuItem, MenuList, Show, Avatar } from '@chakra-ui/react';
+import { Flex, Heading, ButtonGroup, Button, Box, Circle, Text, Menu, MenuButton, MenuItem, MenuList, Show, Avatar, HStack } from '@chakra-ui/react';
 import React, { FC, useContext, useEffect } from 'react';
 import { FaHamburger } from 'react-icons/fa';
 import { NavLink, useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { ColorModeSwitcher } from '../ColorModeSwitcher';
 import { AuthConsumer, AuthContext } from '../store/auth-context';
 import { IProfileShort } from './ProfileCard';
+import { useTranslation } from 'react-i18next';
 
 export interface INavigation {
     image: string
@@ -14,10 +15,7 @@ export interface INavigation {
 const Navigation: FC<INavigation> = (props: INavigation) => {
     const outlet = useLocation();
     const navigate = useNavigate();
-
-
-
-
+    const { t, i18n } = useTranslation('common')
     return (
         <AuthConsumer>
             {({ logout }) => (
@@ -30,9 +28,9 @@ const Navigation: FC<INavigation> = (props: INavigation) => {
                     </Show>
                     <Show above='sm'>
                         <ButtonGroup height='50px' display='flex'>
-                            <Button bg='transparent' h='100%' borderRadius='2px' display='flex' textAlign='center' m='auto' as={NavLink} borderBottom={outlet.pathname === "/dashboard/home" ? "3px solid orange" : ""} to="/dashboard/home"><Text m='auto'>Home</Text></Button>
-                            <Button bg='transparent' h='100%' borderRadius='2px' display='flex' textAlign='center' m='auto' as={NavLink} borderBottom={outlet.pathname === "/dashboard/companies" ? "3px solid orange" : ""} to="/dashboard/companies"><Text m='auto'>Companies</Text></Button>
-                            <Button bg='transparent' h='100%' borderRadius='2px' display='flex' textAlign='center' m='auto' as={NavLink} borderBottom={outlet.pathname === "/dashboard/jobs" ? "3px solid orange" : ""} to="/dashboard/jobs"><Text m='auto'>Jobs</Text></Button>
+                            <Button _hover={{ bg: 'rgba(255,134,38,.5)' }} bg='transparent' h='100%' borderRadius='2px' display='flex' textAlign='center' m='auto' as={NavLink} borderBottom={outlet.pathname === "/dashboard/home" ? "3px solid rgba(255,134,38,1.00)" : ""} to="/dashboard/home"><Text m='auto'>{t('navigation.home')}</Text></Button>
+                            <Button _hover={{ bg: 'rgba(255,134,38,.5)' }} color='black' bg='transparent' h='100%' borderRadius='2px' display='flex' textAlign='center' m='auto' as={NavLink} borderBottom={outlet.pathname === "/dashboard/companies" ? "3px solid rgba(255,134,38,1.00)" : ""} to="/dashboard/companies"><Text m='auto'>{t('navigation.companies')}</Text></Button>
+                            <Button _hover={{ bg: 'rgba(255,134,38,.5)' }} color='black' bg='transparent' h='100%' borderRadius='2px' display='flex' textAlign='center' m='auto' as={NavLink} borderBottom={outlet.pathname === "/dashboard/jobs" ? "3px solid rgba(255,134,38,1.00)" : ""} to="/dashboard/jobs"><Text m='auto'>{t('navigation.jobs')}</Text></Button>
                         </ButtonGroup>
                         <ButtonGroup m={0}>
                             <Menu>
@@ -41,6 +39,15 @@ const Navigation: FC<INavigation> = (props: INavigation) => {
                                 </MenuButton>
                                 <MenuList m={0} p={0}>
                                     <ColorModeSwitcher />
+                                    <HStack>
+                                        <Button onClick={() => { i18n.changeLanguage('hr') }}>
+                                            HR
+                                        </Button>
+                                        <Button onClick={() => { i18n.changeLanguage('en') }}>
+                                            EN
+                                        </Button>
+                                    </HStack>
+
                                     <MenuItem onClick={() => { navigate('/dashboard/profile/' + props.id) }}>User profile</MenuItem>
                                     <MenuItem onClick={logout}>Log out</MenuItem>
                                 </MenuList>

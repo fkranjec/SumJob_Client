@@ -4,7 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
 
 import Login from "./pages/login/Login"
-
+import './i18n/config';
 import Companies from "./pages/dashboard/companies/Companies"
 import Jobs from "./pages/dashboard/jobs/Jobs"
 import { AuthContextProvider } from "./store/auth-context"

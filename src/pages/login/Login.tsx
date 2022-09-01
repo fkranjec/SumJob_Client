@@ -5,6 +5,7 @@ import { AuthContext, AuthConsumer } from '../../store/auth-context';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 const LOGIN = gql`
@@ -18,6 +19,7 @@ const LOGIN = gql`
 `
 
 const Login = () => {
+    const { t } = useTranslation('common');
     const [user, setUser] = useState({ username: "", password: "" });
     const [loginUser, { loading }] = useMutation(LOGIN, {
         variables: { username: user.username, password: user.password }, onCompleted: (res) => {
@@ -39,11 +41,11 @@ const Login = () => {
             <Container bg='blackAlpha.400' maxW='1200px' h='800px' borderRadius='10px'>
                 <Center height='100%'>
                     <VStack>
-                        <Heading>Login</Heading>
+                        <Heading>{t('login')}</Heading>
                         <Input onChange={(e) => { setUser({ ...user, username: e.target.value }) }} />
 
                         <Input onChange={(e) => { setUser({ ...user, password: e.target.value }) }} />
-                        <Button isLoading={loading} onClick={() => handleLogin()}>Login</Button>
+                        <Button isLoading={loading} onClick={() => handleLogin()}>{t('login')}</Button>
                     </VStack>
                 </Center>
             </Container>
