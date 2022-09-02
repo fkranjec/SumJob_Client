@@ -1,109 +1,86 @@
-import { Container, Flex, Show, VStack, Text, Input, useColorMode, Spinner, Spacer, Button, ScaleFade, Circle, Box } from '@chakra-ui/react'
-import Post from '../../../components/Post'
-import { scrollBarStyle } from '../../../utils/styles'
-
-import { SubscriptionResult, useMutation, useQuery, useSubscription } from '@apollo/client';
+import { VStack, Spinner } from '@chakra-ui/react'
+import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
-import { useEffect, useState } from 'react';
-import ProfileCard from '../../../components/ProfileCard';
+import { Suspense, lazy, FC, useEffect } from 'react';
+import { useOutletContext } from 'react-router-dom';
+import { InView } from 'react-intersection-observer';
+
+import Post from '../../../components/Post'
 import Layout from '../../../components/Layout';
-import NewPost from '../../../components/NewPost';
-import Rooms from '../../../components/Chat/Rooms';
+import { IProfileShort } from '../Dashboard';
 
-const SAVE_POST = gql`
-    mutation createP($body: String!){
-        createPost(body: $body) {
-            id
-            body
-            username
+const ProfileCard = lazy(() => import('../../../components/ProfileCard'));
+const Rooms = lazy(() => import('../../../components/Chat/Rooms'));
+
+const GET_JOBS = gql`
+    query GetJobs($offset:Int, $limit: Int) {
+        getJobs(offset:$offset, limit: $limit) {
+                id
+                name
+                content{
+                    body
+                }
+                company{
+                    id
+                }
         }
     }
 `;
 
-const LATEST_POSTS = gql`
-    subscription newPost{
-        postCreated {
-            body
-            username 
-        }
-    }
-`;
+const Home: FC = () => {
+    const limit = 3;
+    let offset = 0;
 
-const FETCH_POSTS_QUERY = gql`
-    {
-        getPosts {
-        id
-        body
-        createdAt
-        username
-    }
-}
-`
+    const { loading, data, fetchMore } = useQuery(GET_JOBS, { variables: { offset: offset, limit: limit } });
 
-
-interface PostInventory {
-    id: string;
-    body: string;
-    username: string;
-}
-
-const Home = () => {
-
-
-    const { loading, data } = useQuery(FETCH_POSTS_QUERY);
-
-    const [isLoading, setIsLoading] = useState(true);
-
-    const [postBody, setPostBody] = useState('');
-
-    const [savePost, { error }] = useMutation<
-        { createPost: PostInventory }, { body: string }
-    >(SAVE_POST, {
-        variables: { body: postBody }
-    });
-
-    const subscription: SubscriptionResult = useSubscription(LATEST_POSTS);
-
-    const handleNewPost = async () => {
-        setIsLoading(true);
-        await savePost({ variables: { body: postBody } });
-        setPostBody('');
-        setIsLoading(false);
-    }
+    const authContext = useOutletContext<IProfileShort>();
 
     useEffect(() => {
-        if (!loading) {
-            setIsLoading(false);
-        }
-    }, [subscription])
+        console.log(data)
+    }, [data])
     return (
         <Layout>
 
             <Layout.Left>
-                <ProfileCard username='fkranjec' firstName='Filip' lastName='Kranjec' />
+                <Suspense fallback={<Spinner></Spinner>}>
+                    <ProfileCard id={authContext?.id} username={authContext?.username} image={authContext?.image} />
+                </Suspense>
             </Layout.Left>
 
             <Layout.Mid>
-                <VStack flexDirection='column-reverse'>
-
-                    {loading && <Spinner></Spinner>}
-                    {!loading && data.getPosts.map((post: any) => (
-                        <Post title={post.body} id={post.id} key={post.id} />
-                    ))}
-                    {!loading && <NewPost title='NEW POST in progress...' />}
-
+                <VStack flexDirection='column'>
+                    {
+                        !loading && data && data?.getJobs.map((job: any) => (
+                            <Post title={job.description} id={job.id} key={job.id} />
+                        ))
+                    }
+                    {
+                        !loading && data && (
+                            <InView
+                                onChange={async (inView) => {
+                                    offset = offset + limit;
+                                    console.log(inView)
+                                    if (inView) {
+                                        await fetchMore({
+                                            variables: {
+                                                offset: offset,
+                                                limit: limit
+                                            }
+                                        })
+                                    }
+                                }}
+                            ></InView>
+                        )
+                    }
                 </VStack>
             </Layout.Mid>
 
             <Layout.Right>
-
-                <Rooms />
-                <Text maxW='unset'>
-                    Poruke ako postoje
-                </Text>
+                <Suspense fallback={<Spinner></Spinner>}>
+                    <Rooms id={authContext?.id} />
+                </Suspense>
             </Layout.Right>
-
-        </Layout>
+        </Layout >
     )
 }
 

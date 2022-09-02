@@ -10,7 +10,7 @@ const ProtectedRoute = (props: any) => {
                 isLoggedIn ?
                     props.children
                     :
-                    <Navigate to="/login" />
+                    <Navigate to="/landing" />
             )}
         </AuthConsumer>
     )

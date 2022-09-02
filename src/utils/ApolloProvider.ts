@@ -1,15 +1,16 @@
-import { split, ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
+import { split, ApolloClient, InMemoryCache, createHttpLink, ApolloLink } from '@apollo/client';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { setContext } from '@apollo/client/link/context'
 import { createClient } from 'graphql-ws';
-import { getMainDefinition } from '@apollo/client/utilities';
+import { createUploadLink } from 'apollo-upload-client'
+import { getMainDefinition, offsetLimitPagination } from '@apollo/client/utilities';
 
 const httpLink = createHttpLink({
-    uri: 'https://2966-46-234-89-17.eu.ngrok.io/graphql'
+    uri: 'http://localhost:5000/graphql'
 })
 
 const wsLink = new GraphQLWsLink(createClient({
-    url: 'ws://2966-46-234-89-17.eu.ngrok.io/graphql'
+    url: 'ws://localhost:5000/graphql'
 }));
 
 const splitLink = split(({ query }) => {
@@ -30,10 +31,18 @@ const authLink = setContext(() => {
 })
 
 const token = localStorage.getItem('token')
-
+const cache = new InMemoryCache({
+    typePolicies: {
+        Query: {
+            fields: {
+                getJobs: offsetLimitPagination()
+            }
+        }
+    }
+})
 export const client: ApolloClient<any> = new ApolloClient({
     link: authLink.concat(splitLink),
-    cache: new InMemoryCache()
+    cache: cache,
 })
 
 

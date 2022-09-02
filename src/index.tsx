@@ -1,12 +1,14 @@
 import { ColorModeScript } from "@chakra-ui/react"
 import * as React from "react"
 import * as ReactDOM from "react-dom/client"
+import './styles.css'
 import { App } from "./App"
 import reportWebVitals from "./reportWebVitals"
 import * as serviceWorker from "./serviceWorker"
 import { BrowserRouter } from "react-router-dom"
 import { ApolloProvider } from '@apollo/client';
 import { client } from "./utils/ApolloProvider"
+
 import 'react-toastify/dist/ReactToastify.css';
 
 const container = document.getElementById("root")

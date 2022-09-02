@@ -1,0 +1,11 @@
+{
+    "login": "Prijava",
+    "navigation": {
+        "home": "Početna",
+        "companies": "Poduzeća",
+        "jobs": "Poslovi",
+        "userProfile": "Korisnički profil",
+        "logout": "Odjava"
+    },
+    "dashboard": {}
+}
