@@ -66,12 +66,9 @@ const UserDetails = (props: IUserDetails) => {
                     <Text>Last name: {props.lastName}</Text>
                     <Text>City: {props.address?.city}</Text>
                     <Text>Street: {props.address?.city}</Text>
-                    <StandaloneSearchBox onLoad={onLoad} onPlacesChanged={onPlacesChanged}>
-                        <Input></Input>
-                    </StandaloneSearchBox>
                 </VStack>
             </VStack>
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false}>
                 <ModalOverlay />
                 <ModalContent>
 
@@ -95,6 +92,9 @@ const UserDetails = (props: IUserDetails) => {
                             )}
                         </ImageUploading>
                         <Text>Address</Text>
+                        <StandaloneSearchBox onLoad={onLoad} onPlacesChanged={onPlacesChanged}>
+                            <Input></Input>
+                        </StandaloneSearchBox>
                         <Input></Input>
 
                     </ModalBody>

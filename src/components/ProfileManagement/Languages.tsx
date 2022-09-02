@@ -22,7 +22,7 @@ const Languages = (props: ILanguage) => {
                     {props.editable && <EditIcon onClick={onOpen} />}
                 </HStack>
             </VStack>
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false}>
                 <ModalOverlay />
                 <ModalContent minWidth='60%' h='60%'>
                     <ModalHeader>

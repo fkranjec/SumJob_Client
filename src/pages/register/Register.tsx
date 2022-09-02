@@ -69,7 +69,6 @@ const Register: React.FunctionComponent<Register> = () => {
     });
 
     const handleChange = (input: string) => (e: any) => {
-        console.log(input + ": " + e.target.value);
         setRegister({ ...register, [input]: e.target.value });
     }
 

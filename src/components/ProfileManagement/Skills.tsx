@@ -20,7 +20,7 @@ const Skills = (props: Props) => {
                     <EditIcon onClick={onOpen} />
                 </HStack>
             </VStack>
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false}>
                 <ModalOverlay />
                 <ModalContent>
 

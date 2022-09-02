@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Box, VStack, Text, Container, Heading, Avatar, HStack, Button, Divider } from '@chakra-ui/react';
 import gql from 'graphql-tag';
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import { useOutletContext, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -65,19 +65,26 @@ const APPLY_TO_JOB = gql`
 
 const Job = () => {
     const { id } = useParams();
-    const { data, loading, error } = useQuery(GET_JOB, { variables: { jobId: id } })
+    const { data, loading, error, refetch } = useQuery(GET_JOB, { variables: { jobId: id } })
     const auth = useOutletContext<IProfileShort>();
+    const [applied, setApplied] = useState<boolean>(false);
+    const [usersApplied, setUsersApplied] = useState([]);
     const [applyToJob] = useMutation(APPLY_TO_JOB, { variables: { jobId: id, userId: auth.id } })
     const handleApply = () => {
         applyToJob().then(res => {
             toast.success("Applied")
+            setApplied((applied) => true);
         }).catch(err => {
             toast.error(err.message)
+            setApplied((applied) => false)
         })
     }
     useEffect(() => {
-        console.log(id)
-    }, [loading])
+        refetch();
+        setUsersApplied((users) => data?.getJob.applied);
+        setApplied(checkUsers(data?.getJob.applied, auth.id))
+        console.log(applied);
+    }, [loading, data])
     return (
         <Layout>
             <Layout.Left>
@@ -106,14 +113,14 @@ const Job = () => {
                             <Text>Users applied</Text>
                             <HStack>
                                 {
-                                    data?.getJob?.applied.map((user) => (
+                                    usersApplied?.map((user) => (
                                         <Avatar key={user.id} src={user.image} />
                                     ))
                                 }
                             </HStack>
 
                         </Container>
-                        <Button m='25px 0' disabled={checkUsers(data?.getJob.applied, auth.id)} onClick={() => handleApply()} colorScheme='orange' >Apply to job</Button>
+                        <Button m='25px 0' disabled={applied} isLoading={loading} onClick={() => handleApply()} colorScheme='orange' >Apply to job</Button>
                     </Box>
                 </VStack>
             </Layout.Mid>

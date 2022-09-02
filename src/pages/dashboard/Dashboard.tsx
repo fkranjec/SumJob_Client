@@ -7,6 +7,7 @@ import { AuthContext } from '../../store/auth-context'
 import { useQuery, useSubscription } from '@apollo/client'
 import { toast } from 'react-toastify'
 import { IUserDetails } from '../../components/ProfileManagement/UserDetails'
+import { scrollBarStyle } from '../../utils/styles'
 
 const Navigation = lazy(() => import('../../components/Navigation'))
 export interface IProfileShort {
@@ -90,11 +91,11 @@ const Dashboard = () => {
         <div>
             {!data && <Center h='100vh'><Spinner></Spinner></Center>}
             {data && (
-                <VStack>
+                <VStack overflowY='hidden' css={scrollBarStyle}>
                     <Navigation id={data?.getUser.id} image={data?.getUser.image} />
                     <TransitionGroup component={null}>
                         <CSSTransition key={location.key} classNames="fade" timeout={300}>
-                            <Center maxW='1600px' w='100%' h='calc(100vh - 70px)' overflowY='hidden' >
+                            <Center maxW='1600px' w='100%' h='calc(100vh - 70px)' css={scrollBarStyle}>
                                 <Outlet context={data?.getUser} />
                             </Center>
                         </CSSTransition>
