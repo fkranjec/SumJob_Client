@@ -18,10 +18,19 @@ const GET_JOBS = gql`
                 id
                 name
                 content{
+                    title
                     body
+                    footer
                 }
+                averageSalary{
+                    from
+                    to
+                }
+                timeCreated
                 company{
                     id
+                    username
+                    image
                 }
         }
     }
@@ -51,7 +60,7 @@ const Home: FC = () => {
                 <VStack flexDirection='column'>
                     {
                         !loading && data && data?.getJobs.map((job: any) => (
-                            <Post title={job.description} id={job.id} key={job.id} />
+                            <Post title={job.name} id={job.id} key={job.id} content={{ title: job.content.title, body: job.content.body, footer: job.content.footer }} salary={{ from: job.averageSalary.from, to: job.averageSalary.to }} user={{ ...job.company }} createdAt={job.timeCreated} />
                         ))
                     }
                     {

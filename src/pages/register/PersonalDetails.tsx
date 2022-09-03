@@ -1,8 +1,8 @@
-import { Center, VStack, Heading, Input, InputGroup, InputRightElement, Button, HStack, Container, Menu } from '@chakra-ui/react'
+import { Center, VStack, Heading, Input, InputGroup, InputRightElement, Button, HStack, Container, Menu, Textarea } from '@chakra-ui/react'
 import React from 'react'
 import { RegisterControl } from './UserDetails'
 import loginImg from '../../assets/login.jpg';
-import { StandaloneSearchBox } from '@react-google-maps/api';
+import { Autocomplete, StandaloneSearchBox } from '@react-google-maps/api';
 
 interface IPersonalDetailsControls extends RegisterControl {
     values: IPersonalDetails
@@ -17,7 +17,7 @@ const PersonalDetails = (props: IPersonalDetailsControls) => {
     let searchBox;
     const onLoad = ref => searchBox = ref;
 
-    const onPlacesChanged = () => console.log(searchBox);
+    const onPlacesChanged = () => console.log(searchBox.getPlace());
     return (
         <Center bg='white' h='100vh' w='100vw' p='0'>
             <HStack boxShadow='dark-lg' p='0px' bg='white' h='800px' minW='1200px' margin='auto 0' borderRadius='30px'>
@@ -25,17 +25,17 @@ const PersonalDetails = (props: IPersonalDetailsControls) => {
                     <Container overflow='hidden' p='0' m='0' position='relative' transform='scale(1,1)' transition='all 0.3s ease-out' _hover={{ transform: 'scale(1.1,1.1)', transition: 'all 0.3s ease-in-out' }} width='100%' bgImage={loginImg} h='800px' bgSize='cover' bgPosition='center'></Container>
                 </Container>
                 <VStack flex='1 0 50%' fontFamily='sans-serif' p='20' m='auto'>
-                    <Heading fontSize='4xl' fontFamily='sans-serif'>Register</Heading>
-                    <Heading fontSize='xl' fontFamily='sans-serif' >Personal details</Heading>
-                    <Input></Input>
-                    <StandaloneSearchBox onLoad={onLoad} onPlacesChanged={onPlacesChanged}>
-                        <Input w='auto'></Input>
-                    </StandaloneSearchBox>
+                    <Heading fontSize='4xl' color='black' fontFamily='sans-serif'>Register</Heading>
+                    <Heading fontSize='xl' color='black' fontFamily='sans-serif' >Personal details</Heading>
+                    <Textarea color='black' placeholder='Tell us something about yourself' _placeholder={{ color: 'grey' }} borderColor='grey'></Textarea>
+                    <Autocomplete onLoad={onLoad} onPlaceChanged={onPlacesChanged}>
+                        <Input color='black' borderColor='grey' _placeholder={{ color: 'grey' }} placeholder='Adress' w='auto'></Input>
+                    </Autocomplete>
                     <Menu>
 
                     </Menu>
                     <HStack w='100%' display='flex' justifyContent='space-around'>
-                        <Button onClick={props.prevStep}>Previous step!</Button>
+                        <Button color='black' colorScheme='blue' onClick={props.prevStep}>Previous step!</Button>
                         <Button colorScheme='orange' mb='auto' onClick={props.register}>Register!</Button>
                     </HStack>
                 </VStack>

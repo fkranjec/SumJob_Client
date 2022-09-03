@@ -29,8 +29,8 @@ const Navigation: FC<INavigation> = (props: INavigation) => {
                     <Show above='sm'>
                         <ButtonGroup height='50px' display='flex'>
                             <Button _hover={{ bg: 'rgba(255,134,38,.5)' }} bg='transparent' h='100%' borderRadius='2px' display='flex' textAlign='center' m='auto' as={NavLink} borderBottom={outlet.pathname === "/dashboard/home" ? "3px solid rgba(255,134,38,1.00)" : ""} to="/dashboard/home"><Text m='auto'>{t('navigation.home')}</Text></Button>
-                            <Button _hover={{ bg: 'rgba(255,134,38,.5)' }} color='black' bg='transparent' h='100%' borderRadius='2px' display='flex' textAlign='center' m='auto' as={NavLink} borderBottom={outlet.pathname === "/dashboard/companies" ? "3px solid rgba(255,134,38,1.00)" : ""} to="/dashboard/companies"><Text m='auto'>{t('navigation.companies')}</Text></Button>
-                            <Button _hover={{ bg: 'rgba(255,134,38,.5)' }} color='black' bg='transparent' h='100%' borderRadius='2px' display='flex' textAlign='center' m='auto' as={NavLink} borderBottom={outlet.pathname === "/dashboard/jobs" ? "3px solid rgba(255,134,38,1.00)" : ""} to="/dashboard/jobs"><Text m='auto'>{t('navigation.jobs')}</Text></Button>
+                            <Button _hover={{ bg: 'rgba(255,134,38,.5)' }} bg='transparent' h='100%' borderRadius='2px' display='flex' textAlign='center' m='auto' as={NavLink} borderBottom={outlet.pathname === "/dashboard/companies" ? "3px solid rgba(255,134,38,1.00)" : ""} to="/dashboard/companies"><Text m='auto'>{t('navigation.companies')}</Text></Button>
+                            <Button _hover={{ bg: 'rgba(255,134,38,.5)' }} bg='transparent' h='100%' borderRadius='2px' display='flex' textAlign='center' m='auto' as={NavLink} borderBottom={outlet.pathname === "/dashboard/jobs" ? "3px solid rgba(255,134,38,1.00)" : ""} to="/dashboard/jobs"><Text m='auto'>{t('navigation.jobs')}</Text></Button>
                         </ButtonGroup>
                         <ButtonGroup m={0}>
                             <Menu>
