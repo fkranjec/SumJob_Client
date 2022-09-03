@@ -13,8 +13,7 @@ const LOGIN = gql`
     mutation login($username: String!, $password: String!){
         login(username: $username, password: $password) {
             token
-            username
-            id
+            refreshToken
         }
     }
 `
@@ -26,9 +25,13 @@ const Login = () => {
     const [loginUser, { loading }] = useMutation(LOGIN, {
         variables: { username: user.username, password: user.password }, onCompleted: (res) => {
             console.log(res)
-            const { token } = res.login;
-            authContext.login(token);
+            const { token, refreshToken } = res.login;
+            authContext.login(token, refreshToken);
             toast.success("Login Successful");
+        },
+        onError: (err) => {
+            console.log(err);
+            toast.error(err.message)
         }
     })
     const authContext = React.useContext(AuthContext);
@@ -46,10 +49,10 @@ const Login = () => {
                     <Container overflow='hidden' flex='0 0 50%' p='0' borderLeftRadius='10px' h='800px' w='100%' m='0px'>
                         <Container overflow='hidden' p='0' m='0' position='relative' transform='scale(1,1)' transition='all 0.3s ease-out' _hover={{ transform: 'scale(1.1,1.1)', transition: 'all 0.3s ease-in-out' }} width='100%' bgImage={loginImg} h='800px' bgSize='cover' bgPosition='center'></Container>
                     </Container>
-                    <VStack flex='1 0 50%' h='100%' p={20} position='relative'>
+                    <VStack placeContent='center' flex='1 0 50%' h='100%' p={20} position='relative' margin='auto 0'>
                         <CloseButton position='absolute' top='10px' right='10px' />
-                        <Heading fontFamily=''>{t('login')}</Heading>
-                        <Input borderColor='grey' focusBorderColor='black' placeholder='Username' color='black' _placeholder={{ color: 'inherit' }} onChange={(e) => { setUser({ ...user, username: e.target.value }) }} />
+                        <Heading color='black'>{t('login')}</Heading>
+                        <Input borderColor='grey' focusBorderColor='black' placeholder='Username' color='black' _placeholder={{ color: 'grey' }} onChange={(e) => { setUser({ ...user, username: e.target.value }) }} />
 
                         <InputGroup size='md'>
                             <Input
@@ -57,7 +60,7 @@ const Login = () => {
                                 focusBorderColor='black'
                                 color='black'
                                 type={show ? 'text' : 'password'}
-                                _placeholder={{ color: 'inherit' }}
+                                _placeholder={{ color: 'grey' }}
                                 placeholder='Password'
                                 value={user.password}
                                 onChange={(e) => { setUser({ ...user, password: e.target.value }) }}

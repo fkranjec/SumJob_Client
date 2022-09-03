@@ -20,8 +20,9 @@ export const AuthContextProvider = (props: any): ReactElement => {
 
     const userIsLogedIn = !!token;
 
-    const login = (token: string) => {
+    const login = (token: string, refreshToken: string) => {
         localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken)
         setToken(token);
         setUser(jwt(token));
         navigate("/dashboard");

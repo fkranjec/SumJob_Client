@@ -23,7 +23,8 @@ export interface IUserDetails {
 
 const UserDetails = (props: IUserDetailsControls) => {
 
-    const [show, setShow] = useState<boolean>(false)
+    const [show, setShow] = useState<boolean>(false);
+    const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
     useEffect(() => {
         console.log(props.values);
@@ -35,12 +36,12 @@ const UserDetails = (props: IUserDetailsControls) => {
                     <Container overflow='hidden' p='0' m='0' position='relative' transform='scale(1,1)' transition='all 0.3s ease-out' _hover={{ transform: 'scale(1.1,1.1)', transition: 'all 0.3s ease-in-out' }} width='100%' bgImage={loginImg} h='800px' bgSize='cover' bgPosition='center'></Container>
                 </Container>
                 <VStack flex='0 0 50%' fontFamily='sans-serif'>
-                    <Heading fontSize='4xl' fontFamily='sans-serif'>Register</Heading>
-                    <Heading fontSize='xl' fontFamily='sans-serif' >User details</Heading>
-                    <Input value={props.values.firstName} onChange={props.handleChange('firstName')} borderColor='grey' focusBorderColor='black' color='black' size='lg' w='40%' _placeholder={{ color: 'inherit' }} placeholder='First name'></Input>
-                    <Input value={props.values.lastName} onChange={props.handleChange('lastName')} borderColor='grey' focusBorderColor='black' color='black' size='lg' w='40%' _placeholder={{ color: 'inherit' }} placeholder='Last name'></Input>
-                    <Input value={props.values.username} onChange={props.handleChange('username')} borderColor='grey' focusBorderColor='black' color='black' size='lg' w='40%' _placeholder={{ color: 'inherit' }} placeholder='Username'></Input>
-                    <Input value={props.values.email} onChange={props.handleChange('email')} borderColor='grey' focusBorderColor='black' color='black' size='lg' w='40%' _placeholder={{ color: 'inherit' }} placeholder='Email'></Input>
+                    <Heading fontSize='4xl' color='black' fontFamily='sans-serif'>Register</Heading>
+                    <Heading fontSize='xl' color='black' fontFamily='sans-serif' >User details</Heading>
+                    <Input value={props.values.firstName} onChange={props.handleChange('firstName')} borderColor='grey' focusBorderColor='black' color='black' size='lg' w='40%' _placeholder={{ color: 'grey' }} placeholder='First name'></Input>
+                    <Input value={props.values.lastName} onChange={props.handleChange('lastName')} borderColor='grey' focusBorderColor='black' color='black' size='lg' w='40%' _placeholder={{ color: 'grey' }} placeholder='Last name'></Input>
+                    <Input value={props.values.username} onChange={props.handleChange('username')} borderColor='grey' focusBorderColor='black' color='black' size='lg' w='40%' _placeholder={{ color: 'grey' }} placeholder='Username'></Input>
+                    <Input value={props.values.email} type='email' onChange={props.handleChange('email')} borderColor='grey' focusBorderColor='black' color='black' size='lg' w='40%' _placeholder={{ color: 'grey' }} placeholder='Email'></Input>
                     <InputGroup size='lg' w='40%'>
                         <Input
                             borderColor='grey'
@@ -49,7 +50,7 @@ const UserDetails = (props: IUserDetailsControls) => {
                             pr='4.5rem'
                             color='black'
                             type={show ? 'text' : 'password'}
-                            _placeholder={{ color: 'inherit' }}
+                            _placeholder={{ color: 'grey' }}
                             placeholder='Enter password'
                             onChange={props.handleChange('password')}
                         />
@@ -65,14 +66,19 @@ const UserDetails = (props: IUserDetailsControls) => {
                             focusBorderColor='black'
                             pr='4.5rem'
                             color='black'
-                            type={show ? 'text' : 'password'}
-                            _placeholder={{ color: 'inherit' }}
+                            type={showConfirm ? 'text' : 'password'}
+                            _placeholder={{ color: 'grey' }}
                             placeholder='Confirm password'
                             value={props.values.confirmPassword}
                             onChange={props.handleChange('confirmPassword')}
                         />
+                        <InputRightElement width='4.5rem'>
+                            <Button colorScheme='orange' h='1.75rem' size='sm' onClick={() => setShowConfirm(!showConfirm)}>
+                                {showConfirm ? 'Hide' : 'Show'}
+                            </Button>
+                        </InputRightElement>
                     </InputGroup>
-                    <Button colorScheme='orange' disabled={props.values.username === '' || props.values.password === '' || props.values.email === '' || props.values.confirmPassword === '' || props.values.firstName === '' || props.values.lastName === '' ? false : false} mb='auto' onClick={props.nextStep}>Next step!</Button>
+                    <Button colorScheme='orange' disabled={props.values.username === '' || props.values.password === '' || props.values.email === '' || props.values.confirmPassword === '' || props.values.firstName === '' || props.values.lastName === '' ? true : false} mb='auto' onClick={props.nextStep}>Next step!</Button>
                 </VStack>
 
             </HStack>
