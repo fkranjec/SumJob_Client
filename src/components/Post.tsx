@@ -29,7 +29,7 @@ const Post: FC<PostProps> = (props: PostProps) => {
     const navigate = useNavigate();
     return (
         <VStack height='60' mt='2' p={0} width='90%' borderRadius='10px' bg='blackAlpha.200' >
-            <Container bg='rgba(255,134,38,1.00)' flex='0 0 20%' w='100%' minW='100%' display='flex' flexDirection='row' borderRadius='10px'>
+            <Container bg='rgba(255,134,38,1.00)' flex='0 0 20%' w='100%' minW='100%' display='flex' flexDirection='row' borderTopRadius='10px'>
                 <Avatar size='sm' m='auto 0' src={props.user?.image} _hover={{}} />
                 <Text fontSize='sm' m='auto 10px'>{props?.user?.username}</Text>
                 <Text m='auto 0' ml='auto' >{new Date(props.createdAt).toDateString()}</Text>
@@ -40,7 +40,7 @@ const Post: FC<PostProps> = (props: PostProps) => {
                 <Text>{props.content?.body}</Text>
                 <Box display='flex' flexDirection='row' justifyContent='space-between' m='auto 10px'>
                     <Text fontWeight='semibold' fontSize='xl' m='auto 0'>{props.salary?.from} - {props.salary?.to}</Text>
-                    <Button bg=' rgba(255,134,38,1.00)' _hover={{ bg: ' rgba(255,134,38,.5)' }} onClick={() => navigate("/dashboard/job/" + props.id)}>See more</Button>
+                    <Button colorScheme='orange' onClick={() => navigate("/dashboard/job/" + props.id)}>See more</Button>
                 </Box>
             </Container>
         </VStack>

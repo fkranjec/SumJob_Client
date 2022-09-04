@@ -8,6 +8,7 @@ export interface ProfileCardProps {
     username?: string
     image?: string
     email?: string
+    userType?: string
 }
 
 export interface IProfileShort {
@@ -25,6 +26,7 @@ export interface IProfileShort {
     companyInfo: {
         companyName: string
     }
+    userType: string
 }
 
 const JOBS_BY_USER = gql`
@@ -38,14 +40,14 @@ const JOBS_BY_USER = gql`
 
 const ProfileCard: React.FC<ProfileCardProps> = (props: ProfileCardProps) => {
     const navigate = useNavigate();
-    const { data, loading } = useQuery(JOBS_BY_USER, { variables: { userId: props.id } })
+    const { data, loading } = useQuery(JOBS_BY_USER, { variables: { userId: props.id }, fetchPolicy: 'cache-and-network' })
     return (
         <Box height='500px' width='90%' borderRadius='10px' bg='blackAlpha.200'>
             <VStack p={7}>
                 <Avatar onClick={() => { navigate('/dashboard/profile/' + props?.id) }} src={props.image} />
                 <Text>{props?.id}</Text>
                 <Text>{props?.username}</Text>
-                {data && (
+                {data && props.userType === 'USER' && (
 
                     <Accordion defaultIndex={[1]} allowMultiple w='100%'>
                         <AccordionItem>
@@ -64,6 +66,27 @@ const ProfileCard: React.FC<ProfileCardProps> = (props: ProfileCardProps) => {
                                             <Button flex='0 1 20%' colorScheme='orange' key={job.id}>{job.name}</Button>
                                         ))
                                     }
+                                </Box>
+                            </AccordionPanel>
+                        </AccordionItem>
+                    </Accordion>
+
+                )}
+                {data && props.userType === 'COMPANY' && (
+
+                    <Accordion defaultIndex={[1]} allowMultiple w='100%'>
+                        <AccordionItem>
+
+                            <AccordionButton w='100%' flex='1'>
+                                <Box flex='1' textAlign='left'>
+                                    Jobs avaliable
+                                </Box>
+                                <AccordionIcon />
+                            </AccordionButton>
+
+                            <AccordionPanel>
+                                <Box display='flex' flexDirection='row' flexWrap='wrap'>
+                                    aaaa
                                 </Box>
                             </AccordionPanel>
                         </AccordionItem>

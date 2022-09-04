@@ -1,5 +1,5 @@
 import { Center, Heading, Spinner, VStack } from '@chakra-ui/react'
-import React, { lazy, Suspense, useContext, useEffect, useState } from 'react'
+import React, { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import gql from 'graphql-tag'
@@ -15,6 +15,7 @@ export interface IProfileShort {
     username: string
     image: string
     email: string
+    userType: string
     address: {
         city: string
         postalCode: string
@@ -34,6 +35,7 @@ const GET_USER = gql`
             username
             image
             email
+            userType
             address {
                 city
                 postalCode
@@ -69,6 +71,7 @@ function useForceUpdate() {
 
 const Dashboard = () => {
     const location = useLocation();
+    const nodeRef = useRef();
     const { user } = useContext(AuthContext);
     const forceUpdate = useForceUpdate();
     const { loading, data, error } = useQuery(GET_USER, {
@@ -92,7 +95,7 @@ const Dashboard = () => {
             {!data && <Center h='100vh'><Spinner></Spinner></Center>}
             {data && (
                 <VStack overflowY='hidden' css={scrollBarStyle}>
-                    <Navigation id={data?.getUser.id} image={data?.getUser.image} />
+                    <Navigation userType={data?.getUser.userType} id={data?.getUser.id} image={data?.getUser.image} />
                     <TransitionGroup component={null}>
                         <CSSTransition key={location.key} classNames="fade" timeout={300}>
                             <Center maxW='1600px' w='100%' h='calc(100vh - 70px)' css={scrollBarStyle}>

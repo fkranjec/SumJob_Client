@@ -8,6 +8,7 @@ import { InView } from 'react-intersection-observer';
 import Post from '../../../components/Post'
 import Layout from '../../../components/Layout';
 import { IProfileShort } from '../Dashboard';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const ProfileCard = lazy(() => import('../../../components/ProfileCard'));
 const Rooms = lazy(() => import('../../../components/Chat/Rooms'));
@@ -70,7 +71,7 @@ const Home: FC = () => {
 
             <Layout.Left>
                 <Suspense fallback={<Spinner></Spinner>}>
-                    <ProfileCard id={authContext?.id} username={authContext?.username} image={authContext?.image} />
+                    <ProfileCard id={authContext?.id} userType={authContext?.userType} username={authContext?.username} image={authContext?.image} />
                 </Suspense>
             </Layout.Left>
 
@@ -85,10 +86,11 @@ const Home: FC = () => {
                         !loading && jobs?.length !== 0 && (
                             <InView
                                 onChange={async (inView) => {
-                                    if (!changed) {
-                                        offset = offset + limit;
+                                    if (limit < data?.getJobs.totalCount) {
+                                        limit += limit;
+                                    } else {
+                                        limit = data?.getJobs.totalCount
                                     }
-                                    console.log(offset)
                                     if (inView) {
                                         const { data, error } = await fetchMore({
                                             variables: {
@@ -96,34 +98,10 @@ const Home: FC = () => {
                                                 limit: limit
                                             }
                                         })
-                                        console.log(jobs)
-                                        let newJobs = [];
-                                        newJobs = jobs
-
-                                        data.getJobs.jobs.forEach(job => {
-                                            console.log(newJobs.includes(job))
-                                            if (!newJobs.includes(job)) {
-
-                                                newJobs.push(job)
-                                            }
-
-                                        })
-                                        console.log(jobs)
-                                        if (jobs.length <= data.getJobs.totalCount) {
+                                        if (jobs.length < data.getJobs.totalCount) {
                                             console.log("UNUTAR IF")
-                                            setJobs([...newJobs])
-                                        } else {
-
-                                            console.log("=====test=====");
-                                            console.log("offset: ", offset)
-                                            console.log("limit: ", limit)
-                                            console.log("jobs length: ", jobs.length)
-                                            console.log(inView);
-                                            console.log("==============");
-                                            limit = data.getJobs.totalCount - jobs.length;
-                                            changed = true;
+                                            setJobs([...data?.getJobs.jobs])
                                         }
-
                                     }
                                 }}
                             ></InView>
