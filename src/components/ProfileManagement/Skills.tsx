@@ -3,9 +3,11 @@ import React from 'react'
 import { EditIcon } from '@chakra-ui/icons'
 import { useTranslation } from 'react-i18next'
 
-type Props = {}
+interface SkillsProps {
 
-const Skills = (props: Props) => {
+}
+
+const Skills = (props: SkillsProps) => {
     const { t } = useTranslation('common')
     const { isOpen, onOpen, onClose } = useDisclosure();
 
