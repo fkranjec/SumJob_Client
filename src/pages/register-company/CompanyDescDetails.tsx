@@ -26,7 +26,7 @@ export interface ICompanyDesc {
     numberOfEmployees?: string
 }
 
-const PersonalDetails = (props: ICompanyDescControls) => {
+const CompanyDescDetails = (props: ICompanyDescControls) => {
     let searchBox;
     const onLoad = ref => searchBox = ref;
 
@@ -63,4 +63,4 @@ const PersonalDetails = (props: ICompanyDescControls) => {
     )
 }
 
-export default PersonalDetails;
+export default CompanyDescDetails;

@@ -51,7 +51,6 @@ const afterwareLink = new ApolloLink((operation: any, forward: any) => {
     })
 })
 
-const token = localStorage.getItem('token')
 const cache = new InMemoryCache({
     typePolicies: {
         Query: {

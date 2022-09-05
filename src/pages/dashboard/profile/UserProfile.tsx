@@ -2,7 +2,8 @@ import { useMutation } from '@apollo/client'
 import { VStack } from '@chakra-ui/react'
 import gql from 'graphql-tag'
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useOutletContext, useParams } from 'react-router-dom'
+import { IProfileShort } from '../../../components/ProfileCard'
 import Education from '../../../components/ProfileManagement/Education'
 import Languages from '../../../components/ProfileManagement/Languages'
 import PreviousJobs from '../../../components/ProfileManagement/PreviousJobs'
@@ -56,6 +57,7 @@ const UPDATE_PREVJOBS = gql`
 
 const UserProfile = (props: IUserProfile) => {
     const { id } = useParams();
+    const authContext = useOutletContext<IProfileShort>();
     const updateMutation = useMutation(UPDATE_USER)
     const languagesMutation = useMutation(UPDATE_LANGUAGES)
     const educationMutation = useMutation(UPDATE_EDUCATION)
@@ -63,7 +65,7 @@ const UserProfile = (props: IUserProfile) => {
     const prevJobsMutation = useMutation(UPDATE_PREVJOBS)
 
     const updateUser = (variables: any) => {
-        console.log(variables);
+        console.log(variables)
         updateMutation["0"]({ variables: { userId: id, userInput: variables } });
         props.refetch();
     }
@@ -79,7 +81,7 @@ const UserProfile = (props: IUserProfile) => {
     }
 
     const updateSkills = (skills: string[]): void => {
-        educationMutation["0"]({ variables: { userId: id, skills: skills } })
+        skillsMutation["0"]({ variables: { userId: id, skills: skills } })
         props.refetch();
     }
 
@@ -90,11 +92,11 @@ const UserProfile = (props: IUserProfile) => {
 
     return (
         <VStack>
-            <UserDetails id={id} username={props.values.getUser.username} firstName={props.values.getUser.userInfo.firstName} lastName={props.values.getUser.userInfo.lastName} address={{ ...props.values.getUser.address }} image={props.values.getUser.image} />
-            <PreviousJobs />
-            <Languages selected={props.values.getUser.userInfo.languages.map(language => { return language })} title="Languages" updateUser={updateLanguages} editable={true} />
-            <Skills />
-            <Education selected={props.values.getUser.userInfo.education.map(edu => { return edu })} title="Education" updateEducation={updateEducation} editable={true} />
+            <UserDetails updateUser={updateUser} id={id} editable={authContext.id === id} username={props.values.getUser.username} userInfo={{ ...props.values.getUser.userInfo }} address={{ ...props.values.getUser.address }} image={props.values.getUser.image} />
+            <PreviousJobs editable={authContext.id === id} selected={props.values.getUser.userInfo.previousJobs.map(job => { return job })} updatePreviousJobs={updatePrevJobs} />
+            <Languages editable={authContext.id === id} selected={props.values.getUser.userInfo.languages.map(language => { return language })} title="Languages" updateUser={updateLanguages} />
+            <Skills editable={authContext.id === id} selected={props.values.getUser.userInfo.skills.map(skill => { return skill })} updateSkills={updateSkills} />
+            <Education editable={authContext.id === id} selected={props.values.getUser.userInfo.education.map(edu => { return edu })} title="Education" updateEducation={updateEducation} />
         </VStack>
     )
 }

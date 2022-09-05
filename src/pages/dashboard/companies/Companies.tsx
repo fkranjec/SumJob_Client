@@ -5,7 +5,6 @@ import React, { useState } from 'react'
 import { InView } from 'react-intersection-observer'
 import CompanyCard from '../../../components/CompanyCard'
 import Layout from '../../../components/Layout'
-import Post from '../../../components/Post'
 
 const GET_COMPANIES = gql`
     query getCompanies($offset: Int!, $limit: Int!){
@@ -14,37 +13,14 @@ const GET_COMPANIES = gql`
             companies{
                 id
                 username
+                image
                 companyInfo{
                   description
+                  numberOfEmployees
+                  typeOfCompany
+                  companyName
                 }
             }
-        }
-    }
-`;
-
-const GET_JOBS = gql`
-    query GetJobs($offset:Int, $limit: Int) {
-        getJobs(offset:$offset, limit: $limit) {
-            totalCount
-            jobs{        
-            id           
-            name            
-                        content{
-                            title
-                            body
-                            footer
-                        }
-                        averageSalary{
-                            from
-                            to
-                        }
-                        timeCreated
-                        company{
-                            id
-                            username
-                            image
-                        }
-                    }          
         }
     }
 `;
@@ -158,7 +134,7 @@ const Companies = () => {
                 <VStack>
                     {
                         !loading && companies?.length !== 0 && companies?.map((company: any) => (
-                            <CompanyCard key={company.id} />
+                            <CompanyCard companyName={company.companyInfo.companyName} image={company.image} numberOfEmployees={company.companyInfo.numberOfEmployees} typeOfCompany={company.companyInfo.typeOfCompany} id={company.id} description={company.companyInfo.description} key={company.id} />
                         ))
                     }
                     {

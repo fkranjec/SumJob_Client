@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { Container, VStack, Circle, Input, Button, Text, Box } from '@chakra-ui/react'
+import { Container, VStack } from '@chakra-ui/react'
 import gql from 'graphql-tag'
 import React, { useEffect, useState } from 'react'
 import Chat from './Chat'
@@ -29,7 +29,7 @@ const Rooms = (props: Rooms) => {
         }
     }, [loading])
     return (
-        <Container p={3} bg='blackAlpha.200'>
+        <Container p={3} bg='blackAlpha.200' borderRadius='10px'>
             <VStack>
                 {rooms?.map((room) =>
                     <Chat key={room.id} id={room.id}></Chat>

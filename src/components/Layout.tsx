@@ -1,7 +1,6 @@
-import { VStack, Flex, Show, Container, Text, ScaleFade } from '@chakra-ui/react'
+import { VStack, Flex, Show, Container } from '@chakra-ui/react'
 import React from 'react'
 import { scrollBarStyle } from '../utils/styles';
-import ProfileCard from './ProfileCard';
 
 const Layout = ({ children }: any) => {
     return (

@@ -1,8 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Box, VStack, Text, Container, Heading, Avatar, HStack, Button, Divider } from '@chakra-ui/react';
 import gql from 'graphql-tag';
-import React, { useEffect, useMemo, useState } from 'react'
-import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
+import React, { useEffect, useState } from 'react'
 import { useOutletContext, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Layout from '../../../components/Layout';

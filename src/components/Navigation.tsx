@@ -1,10 +1,9 @@
-import { Flex, Heading, ButtonGroup, Button, Box, Circle, Text, Menu, MenuButton, MenuItem, MenuList, Show, Avatar, HStack } from '@chakra-ui/react';
-import React, { FC, useContext, useEffect } from 'react';
+import { Flex, Heading, ButtonGroup, Button, Box, Text, Menu, MenuButton, MenuItem, MenuList, Show, Avatar, HStack } from '@chakra-ui/react';
+import React, { FC } from 'react';
 import { FaHamburger } from 'react-icons/fa';
 import { NavLink, useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { ColorModeSwitcher } from '../ColorModeSwitcher';
-import { AuthConsumer, AuthContext } from '../store/auth-context';
-import { IProfileShort } from './ProfileCard';
+import { AuthConsumer } from '../store/auth-context';
 import { useTranslation } from 'react-i18next';
 
 export interface INavigation {

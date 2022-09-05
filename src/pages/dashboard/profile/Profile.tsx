@@ -1,15 +1,13 @@
-import { useMutation, useQuery } from '@apollo/client';
-import { Text, VStack } from '@chakra-ui/react';
+import { useQuery } from '@apollo/client';
+import { Spinner } from '@chakra-ui/react';
 import gql from 'graphql-tag';
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Suspense, useEffect } from 'react'
+import { useOutletContext, useParams } from 'react-router-dom'
+import Rooms from '../../../components/Chat/Rooms';
 import Layout from '../../../components/Layout';
 import ProfileCard from '../../../components/ProfileCard';
-import Education from '../../../components/ProfileManagement/Education';
-import Languages from '../../../components/ProfileManagement/Languages';
-import PreviousJobs from '../../../components/ProfileManagement/PreviousJobs';
-import Skills from '../../../components/ProfileManagement/Skills';
-import UserDetails from '../../../components/ProfileManagement/UserDetails';
+import { IProfileShort } from '../Dashboard';
+import CompanyProfile from './CompanyProfile';
 import UserProfile from './UserProfile';
 
 export interface IProfile {
@@ -65,6 +63,12 @@ export const GET_USER = gql`
                 firstName
                 lastName
             }
+            companyInfo{
+                description
+                numberOfEmployees
+                typeOfCompany
+                companyName
+            }
 
         }
     }
@@ -74,8 +78,8 @@ export const GET_USER = gql`
 
 const Profile = () => {
     const { id } = useParams();
-    const { loading, data, error, refetch } = useQuery<IProfile>(GET_USER, { variables: { userId: id }, fetchPolicy: 'cache-and-network' });
-
+    const { loading, data, error, refetch } = useQuery<IProfile>(GET_USER, { variables: { userId: id }, fetchPolicy: 'no-cache' });
+    const authContext = useOutletContext<IProfileShort>()
     useEffect(() => {
         if (!loading) {
             console.log(data)
@@ -89,10 +93,13 @@ const Profile = () => {
                 <ProfileCard id={id} username={data?.getUser.username} image={data?.getUser.image} userType={data?.getUser.userType}></ProfileCard>
             </Layout.Left>
             <Layout.Mid>
-                {data && <UserProfile values={data} refetch={refetch} />}
+                {data && data.getUser.userType === 'USER' && <UserProfile values={data} refetch={refetch} />}
+                {data && data.getUser.userType === 'COMPANY' && <CompanyProfile values={data} refetch={refetch} />}
             </Layout.Mid>
             <Layout.Right>
-                <Text>Work in progress</Text>
+                <Suspense fallback={<Spinner></Spinner>}>
+                    <Rooms id={authContext?.id} />
+                </Suspense>
             </Layout.Right>
         </Layout>
     )

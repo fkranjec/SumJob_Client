@@ -145,7 +145,7 @@ const Chat = (props: Chat) => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, [loading, getRoom.loading])
     return (
-        <Container p={3} bg='blackAlpha.100' >
+        <Container p={3} bg='blackAlpha.100' borderRadius='10px'>
             <Box display='flex' justifyContent='space-between' flexDirection='row'>
                 <Avatar src={getRoom.data?.getRoom.userID1.id === auth.id ? getRoom.data?.getRoom.userID2.image : getRoom?.data?.getRoom.userID1.image}></Avatar>
                 <Text>{auth.id === getRoom?.data?.getRoom.userID1.id ? getRoom?.data?.getRoom.userID2.username : getRoom?.data?.getRoom.userID1.username}</Text>

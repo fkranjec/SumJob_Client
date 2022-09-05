@@ -1,10 +1,7 @@
 import { Box, Button, Container, HStack, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { EditIcon } from '@chakra-ui/icons'
+import { CloseIcon, EditIcon } from '@chakra-ui/icons'
 import { useTranslation } from 'react-i18next'
-import gql from 'graphql-tag'
-import { useLazyQuery, useQuery } from '@apollo/client'
-import { updateLanguageServiceSourceFile } from 'typescript'
 import { scrollBarStyle } from '../../utils/styles'
 interface IEducation {
     title: string
@@ -45,13 +42,15 @@ const Education = (props: IEducation) => {
                     <Text>{props.title}</Text>
                     {props.editable && <EditIcon onClick={handleOpen} />}
                 </HStack>
-                <VStack w='100%' overflowY='auto' css={scrollBarStyle}>
+                <HStack w='100%' wrap='wrap' gap='10px' p={10} overflowY='auto' css={scrollBarStyle}>
                     {
                         selectedEducation.map((language, index) => (
-                            <Text key={index}>{language}</Text>
+                            <Box key={index} w='fit-content' flex='0 0 fit-content' p={2} bg='rgba(255,134,38,1.00)' borderRadius='10px'>
+                                <Text>{language}</Text>
+                            </Box>
                         ))
                     }
-                </VStack>
+                </HStack>
 
             </VStack>
             <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false}>
@@ -61,16 +60,22 @@ const Education = (props: IEducation) => {
                         {t('languages')}
                     </ModalHeader>
                     <ModalBody>
-                        <Input value={education} onChange={(e) => setEducation(e.target.value)} placeholder='Insert previous education'></Input>
-                        <Button colorScheme='orange' onClick={onEducationSelected}>Add</Button>
+                        <HStack>
+                            <Input value={education} onChange={(e) => setEducation(e.target.value)} placeholder='Insert previous education'></Input>
+                            <Button colorScheme='orange' onClick={onEducationSelected}>Add</Button>
+                        </HStack>
+
                         <Box>
-                            <VStack>
+                            <HStack wrap='wrap' gap='10px' p={10}>
                                 {
-                                    selectedEducation.map((language, index) => (
-                                        <Text key={index}>{language}</Text>
+                                    isOpen && selectedEducation.map((language, index) => (
+                                        <Box key={index} w='fit-content' display='flex' flex='0 0 fit-content' p={2} bg='rgba(255,134,38,1.00)' borderRadius='10px'>
+                                            <Text>{language}</Text>
+                                            <CloseIcon m='auto 10px' onClick={() => { setSelectedEducation((educations) => educations.filter((lang, idx) => { return idx !== index })) }} w='10px' />
+                                        </Box>
                                     ))
                                 }
-                            </VStack>
+                            </HStack>
                         </Box>
                     </ModalBody>
                     <ModalFooter>

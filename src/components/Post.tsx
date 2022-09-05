@@ -1,6 +1,5 @@
-import { Avatar, Box, Button, Container, Divider, Heading, Text, VStack } from '@chakra-ui/react'
+import { Avatar, Box, Button, Container, Divider, Text, VStack } from '@chakra-ui/react'
 import React, { FC } from 'react'
-import { FaRulerHorizontal } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 
 interface PostProps {

@@ -1,12 +1,11 @@
-import { Center, Heading, Spinner, VStack } from '@chakra-ui/react'
-import React, { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react'
+import { Center, Spinner, VStack } from '@chakra-ui/react'
+import React, { lazy, useContext, useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import gql from 'graphql-tag'
 import { AuthContext } from '../../store/auth-context'
 import { useQuery, useSubscription } from '@apollo/client'
 import { toast } from 'react-toastify'
-import { IUserDetails } from '../../components/ProfileManagement/UserDetails'
 import { scrollBarStyle } from '../../utils/styles'
 
 const Navigation = lazy(() => import('../../components/Navigation'))
@@ -71,7 +70,6 @@ function useForceUpdate() {
 
 const Dashboard = () => {
     const location = useLocation();
-    const nodeRef = useRef();
     const { user } = useContext(AuthContext);
     const forceUpdate = useForceUpdate();
     const { loading, data, error } = useQuery(GET_USER, {

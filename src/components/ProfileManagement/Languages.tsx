@@ -1,11 +1,9 @@
 import { Box, Button, Container, HStack, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { EditIcon } from '@chakra-ui/icons'
+import { CloseIcon, EditIcon } from '@chakra-ui/icons'
 import { useTranslation } from 'react-i18next'
 import gql from 'graphql-tag'
 import { useLazyQuery, useQuery } from '@apollo/client'
-import { updateLanguageServiceSourceFile } from 'typescript'
-import { scrollBarStyle } from '../../utils/styles'
 interface ILanguage {
     title: string
     editable: boolean
@@ -59,13 +57,15 @@ const Languages = (props: ILanguage) => {
                     <Text>{props.title}</Text>
                     {props.editable && <EditIcon onClick={handleOpen} />}
                 </HStack>
-                <VStack p={10}>
+                <HStack wrap='wrap' gap='10px' p={10}>
                     {
                         selectedLanguages.map((language, index) => (
-                            <Text key={index}>{language}</Text>
+                            <Box key={index} w='fit-content' flex='0 0 fit-content' p={2} bg='rgba(255,134,38,1.00)' borderRadius='10px'>
+                                <Text >{language}</Text>
+                            </Box>
                         ))
                     }
-                </VStack>
+                </HStack>
             </VStack>
             <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false}>
                 <ModalOverlay />
@@ -82,13 +82,17 @@ const Languages = (props: ILanguage) => {
                         }
 
                         <Box>
-                            <VStack>
+                            <HStack wrap='wrap' gap='10px' p={10}>
                                 {
                                     selectedLanguages.map((language, index) => (
-                                        <Text onClick={() => setSelectedLanguages((languages) => languages.filter((lang, idx) => { return idx !== index }))} key={index}>{language}</Text>
+                                        <Box display='flex' key={index} w='fit-content' flex='0 0 fit-content' p={2} bg='rgba(255,134,38,1.00)' borderRadius='10px'>
+
+                                            <Text>{language}</Text>
+                                            <CloseIcon w='10px' m='auto 10px' onClick={() => setSelectedLanguages((languages) => languages.filter((lang, idx) => { return idx !== index }))} />
+                                        </Box>
                                     ))
                                 }
-                            </VStack>
+                            </HStack>
                         </Box>
                     </ModalBody>
                     <ModalFooter>

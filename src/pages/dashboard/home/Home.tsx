@@ -8,7 +8,6 @@ import { InView } from 'react-intersection-observer';
 import Post from '../../../components/Post'
 import Layout from '../../../components/Layout';
 import { IProfileShort } from '../Dashboard';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 const ProfileCard = lazy(() => import('../../../components/ProfileCard'));
 const Rooms = lazy(() => import('../../../components/Chat/Rooms'));
@@ -18,24 +17,24 @@ const GET_JOBS = gql`
         getJobs(offset:$offset, limit: $limit) {
             totalCount
             jobs{        
-            id           
-            name            
-                        content{
-                            title
-                            body
-                            footer
-                        }
-                        averageSalary{
-                            from
-                            to
-                        }
-                        timeCreated
-                        company{
-                            id
-                            username
-                            image
-                        }
-                    }          
+                id           
+                name            
+                content{
+                    title
+                    body
+                    footer
+                }
+                averageSalary{
+                    from
+                    to
+                }
+                timeCreated
+                company{
+                    id
+                    username
+                    image
+                }
+            }          
         }
     }
 `;
@@ -79,7 +78,15 @@ const Home: FC = () => {
                 <VStack flexDirection='column'>
                     {
                         !loading && jobs?.length !== 0 && jobs?.map((job: any) => (
-                            <Post title={job.name} id={job.id} key={job.id} content={{ title: job?.content?.title, body: job.content?.body, footer: job.content?.footer }} salary={{ from: job.averageSalary?.from, to: job.averageSalary?.to }} user={{ ...job.company }} createdAt={job.timeCreated} />
+                            <Post
+                                title={job.name}
+                                id={job.id}
+                                key={job.id}
+                                content={{ title: job?.content?.title, body: job.content?.body, footer: job.content?.footer }}
+                                salary={{ from: job.averageSalary?.from, to: job.averageSalary?.to }}
+                                user={{ ...job.company }}
+                                createdAt={job.timeCreated}
+                            />
                         ))
                     }
                     {
@@ -99,7 +106,6 @@ const Home: FC = () => {
                                             }
                                         })
                                         if (jobs.length < data.getJobs.totalCount) {
-                                            console.log("UNUTAR IF")
                                             setJobs([...data?.getJobs.jobs])
                                         }
                                     }

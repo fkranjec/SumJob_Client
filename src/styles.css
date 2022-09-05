@@ -44,3 +44,7 @@ html {
     background: "orange";
     border-radius: '20px';
 }
+
+.pac-container {
+    z-index: 100001
+}
