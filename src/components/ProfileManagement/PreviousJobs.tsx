@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { CloseIcon, EditIcon } from '@chakra-ui/icons'
 import { useTranslation } from 'react-i18next'
 import { scrollBarStyle } from '../../utils/styles'
+import { PrevJob } from '../../pages/dashboard/profile/Profile'
 
 interface IPreviousJobs {
     editable?: boolean
-    selected?: string[]
+    selected?: PrevJob[]
     updatePreviousJobs: (variables: any) => void
 }
 
@@ -14,8 +15,16 @@ const PreviousJobs = (props: IPreviousJobs) => {
     const { t } = useTranslation('common');
     const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const [prevJob, setPrevJob] = useState<string>('');
-    const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
+    const [prevJob, setPrevJob] = useState<PrevJob>({
+        title: '',
+        companyName: '',
+        city: '',
+        period: {
+            from: 0,
+            to: 0
+        }
+    });
+    const [selectedJobs, setSelectedJobs] = useState<PrevJob[]>([]);
 
     const handleSave = () => {
         props.updatePreviousJobs(selectedJobs);
@@ -24,7 +33,15 @@ const PreviousJobs = (props: IPreviousJobs) => {
 
     const onPrevJobSelected = () => {
         setSelectedJobs([...selectedJobs, prevJob]);
-        setPrevJob('');
+        setPrevJob({
+            title: '',
+            companyName: '',
+            city: '',
+            period: {
+                from: 0,
+                to: 0
+            }
+        });
     }
 
     useEffect(() => {
@@ -41,7 +58,10 @@ const PreviousJobs = (props: IPreviousJobs) => {
                     {
                         selectedJobs.map((job, index) => (
                             <Box key={index} w='fit-content' flex='0 0 fit-content' p={2} bg='rgba(255,134,38,1.00)' borderRadius='10px'>
-                                <Text>{job}</Text>
+                                <Text>{job.title}</Text>
+                                <Text>{job.companyName}</Text>
+                                <Text>{job.period.from} - {job.period.to}</Text>
+                                <Text>{job.city}</Text>
                             </Box>
                         ))
                     }
@@ -55,7 +75,7 @@ const PreviousJobs = (props: IPreviousJobs) => {
                     </ModalHeader>
                     <ModalBody>
                         <HStack>
-                            <Input value={prevJob} onChange={(e) => setPrevJob(e.target.value)} placeholder='Insert previous jobs'></Input>
+                            <Input value={prevJob.title} onChange={(e) => setPrevJob({ ...prevJob, title: e.target.value })} placeholder='Insert previous jobs'></Input>
                             <Button colorScheme='orange' onClick={onPrevJobSelected}>Add</Button>
                         </HStack>
 
@@ -64,7 +84,10 @@ const PreviousJobs = (props: IPreviousJobs) => {
                                 {
                                     isOpen && selectedJobs.map((job, index) => (
                                         <Box display='flex' key={index} w='fit-content' flex='0 0 fit-content' p={2} bg='rgba(255,134,38,1.00)' borderRadius='10px'>
-                                            <Text>{job}</Text>
+                                            <Text>{job.title}</Text>
+                                            <Text>{job.companyName}</Text>
+                                            <Text>{job.period.from} - {job.period.to}</Text>
+                                            <Text>{job.city}</Text>
                                             <CloseIcon w='10px' m='auto 10px' onClick={() => { setSelectedJobs((jobs) => jobs.filter((lang, idx) => { return idx !== index })) }} />
                                         </Box>
                                     ))

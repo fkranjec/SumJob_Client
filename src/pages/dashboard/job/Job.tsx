@@ -43,6 +43,10 @@ const GET_JOB = gql`
                     streetNumber
                     street
                     state
+                    latlng{
+                        lat
+                        lng
+                    }
                 }
                 companyInfo {
                     companyName
@@ -134,9 +138,11 @@ const Job = () => {
             </Layout.Mid>
             <Layout.Right>
                 <VStack w='100%' ml='20px'>
-                    <Container w='100%' borderRadius='10px' p={0} h='fit-content'>
-                        <Map />
-                    </Container>
+                    {data &&
+                        <Container w='100%' borderRadius='10px' p={0} h='fit-content'>
+                            <Map lat={data?.getJob.company.address.latlng.lat} lng={data?.getJob.company.address.latlng.lng} />
+                        </Container>
+                    }
                 </VStack>
             </Layout.Right>
         </Layout>

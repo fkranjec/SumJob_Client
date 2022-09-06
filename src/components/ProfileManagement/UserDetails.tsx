@@ -103,11 +103,11 @@ const UserDetails = (props: IUserDetails) => {
                 </HStack>
                 {user &&
                     <VStack m='auto 0' h='100%'>
-                        <Text>Username: {user.username}</Text>
-                        <Text>First name: {user.userInfo.firstName}</Text>
-                        <Text>Last name: {user.userInfo.lastName}</Text>
-                        <Text>City: {user.address?.city}</Text>
-                        <Text>Street: {user.address?.city}</Text>
+                        <Text><b>Username:</b> {user.username}</Text>
+                        <Text><b>First name:</b> {user.userInfo.firstName}</Text>
+                        <Text><b>Last name:</b> {user.userInfo.lastName}</Text>
+                        <Text><b>City:</b> {user.address?.city}</Text>
+                        <Text><b>Street:</b> {user.address?.city}</Text>
                     </VStack>
                 }
             </VStack>

@@ -1,14 +1,21 @@
 import { GoogleMap, LoadScript } from '@react-google-maps/api'
 import React from 'react'
 
+interface IMap {
+    lat?: number,
+    lng?: number
+}
 
-const Map = (props: any) => {
-
+const Map = ({ lat, lng }: IMap) => {
+    if (lat === null || lng === null) {
+        lat = 46.30;
+        lng = 16.33;
+    }
 
     return (
         <GoogleMap
             mapContainerStyle={{ width: '100%', height: '500px' }}
-            center={{ lat: 45.12, lng: 16.7 }}
+            center={{ lat: lat, lng: lng }}
             zoom={13}
         >
 

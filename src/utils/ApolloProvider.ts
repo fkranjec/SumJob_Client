@@ -52,6 +52,7 @@ const afterwareLink = new ApolloLink((operation: any, forward: any) => {
 })
 
 const cache = new InMemoryCache({
+    addTypename: false,
     typePolicies: {
         Query: {
             fields: {

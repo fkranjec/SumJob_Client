@@ -38,7 +38,7 @@ const UPDATE_LANGUAGES = gql`
 `
 
 const UPDATE_EDUCATION = gql`
-    mutation updateEducation($userId: ID!, $education: [String]){
+    mutation updateEducation($userId: ID!, $education: [EducationInput]){
         updateEducation(userId: $userId, education: $education)
     }
 `
@@ -50,7 +50,7 @@ const UPDATE_SKILLS = gql`
 `
 
 const UPDATE_PREVJOBS = gql`
-    mutation updatePrevJobs($userId: ID!, $prevJobs: [String]){
+    mutation updatePrevJobs($userId: ID!, $prevJobs: [PreviousJobsInput]){
         updatePrevJobs(userId: $userId, prevJobs: $prevJobs)
     }
 `
@@ -66,37 +66,34 @@ const UserProfile = (props: IUserProfile) => {
 
     const updateUser = (variables: any) => {
         console.log(variables)
-        updateMutation["0"]({ variables: { userId: id, userInput: variables } });
-        props.refetch();
+        updateMutation["0"]({ variables: { userId: id, userInput: variables } }).then(() => props.refetch());
     }
 
     const updateLanguages = (languages: string[]): void => {
-        languagesMutation["0"]({ variables: { userId: id, languages: languages } })
-        props.refetch();
+        languagesMutation["0"]({ variables: { userId: id, languages: languages } }).then(() => props.refetch());
     }
 
     const updateEducation = (education: string[]): void => {
-        educationMutation["0"]({ variables: { userId: id, education: education } })
-        props.refetch();
+        console.log(education);
+        educationMutation["0"]({ variables: { userId: id, education: education } }).then(() => props.refetch());
     }
 
     const updateSkills = (skills: string[]): void => {
-        skillsMutation["0"]({ variables: { userId: id, skills: skills } })
-        props.refetch();
+        skillsMutation["0"]({ variables: { userId: id, skills: skills } }).then(() => props.refetch());
     }
 
     const updatePrevJobs = (prevJobs: string[]): void => {
-        prevJobsMutation["0"]({ variables: { userId: id, prevJobs: prevJobs } })
-        props.refetch();
+        prevJobsMutation["0"]({ variables: { userId: id, prevJobs: prevJobs } }).then(() => props.refetch());
     }
 
     return (
         <VStack>
             <UserDetails updateUser={updateUser} id={id} editable={authContext.id === id} username={props.values.getUser.username} userInfo={{ ...props.values.getUser.userInfo }} address={{ ...props.values.getUser.address }} image={props.values.getUser.image} />
+            <Education editable={authContext.id === id} selected={props.values.getUser.userInfo.education.map(edu => { return edu })} title="Education" updateEducation={updateEducation} />
             <PreviousJobs editable={authContext.id === id} selected={props.values.getUser.userInfo.previousJobs.map(job => { return job })} updatePreviousJobs={updatePrevJobs} />
             <Languages editable={authContext.id === id} selected={props.values.getUser.userInfo.languages.map(language => { return language })} title="Languages" updateUser={updateLanguages} />
             <Skills editable={authContext.id === id} selected={props.values.getUser.userInfo.skills.map(skill => { return skill })} updateSkills={updateSkills} />
-            <Education editable={authContext.id === id} selected={props.values.getUser.userInfo.education.map(edu => { return edu })} title="Education" updateEducation={updateEducation} />
+
         </VStack>
     )
 }

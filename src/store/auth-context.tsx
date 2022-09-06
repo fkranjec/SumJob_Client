@@ -28,7 +28,7 @@ export const AuthContextProvider = (props: any): ReactElement => {
         navigate("/dashboard");
     }
 
-    const register = (token: string) => {
+    const register = () => {
         navigate("/login");
     }
 

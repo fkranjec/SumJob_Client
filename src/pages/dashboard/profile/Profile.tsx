@@ -24,10 +24,10 @@ export interface IProfile {
             streetNumber: string
         }
         userInfo?: {
-            education: string[]
+            education: Education[]
             languages: string[]
             skills: string[]
-            previousJobs: string[]
+            previousJobs: PrevJob[]
             firstName: string
             lastName: string
         },
@@ -39,6 +39,23 @@ export interface IProfile {
         }
     }
 
+}
+export interface PrevJob {
+    title: string
+    city?: string
+    companyName: string
+    period: {
+        from: number
+        to: number
+    }
+}
+export interface Education {
+    name: string
+    period: {
+        from: number
+        to: number
+    }
+    occupation: string
 }
 
 export const GET_USER = gql`
@@ -56,10 +73,25 @@ export const GET_USER = gql`
                 streetNumber
             }
             userInfo {
-                education
+                education{
+                    name
+                    period{
+                        from
+                        to
+                    }
+                    occupation
+                }
                 languages
                 skills
-                previousJobs
+                previousJobs{
+                    title
+                    period{
+                        from
+                        to
+                    }
+                    companyName
+                    city
+                }
                 firstName
                 lastName
             }
