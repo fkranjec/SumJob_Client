@@ -1,13 +1,13 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Box, VStack, Text, Container, Heading, Avatar, HStack, Button, Divider } from '@chakra-ui/react';
 import gql from 'graphql-tag';
-import React, { useEffect, useMemo, useState } from 'react'
-import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
+import React, { useEffect, useState } from 'react'
 import { useOutletContext, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Layout from '../../../components/Layout';
 import Map from '../../../components/Map';
-import ProfileCard, { IProfileShort } from '../../../components/ProfileCard';
+import ProfileCard, { IProfileShort } from '../../../components/Cards/ProfileCard';
+import SkillCard from '../../../components/Cards/SkillCard';
 
 const GET_JOB = gql`
     query getJob($jobId: ID!){
@@ -36,12 +36,18 @@ const GET_JOB = gql`
             company {
                 id
                 username
+                image
+
                 address {
                     city
                     postalCode
                     streetNumber
                     street
                     state
+                    latlng{
+                        lat
+                        lng
+                    }
                 }
                 companyInfo {
                     companyName
@@ -49,6 +55,7 @@ const GET_JOB = gql`
                     numberOfEmployees
                     typeOfCompany
                 }
+                userType
             }
         }
     }
@@ -84,33 +91,43 @@ const Job = () => {
         setUsersApplied((users) => data?.getJob.applied);
         setApplied(checkUsers(data?.getJob.applied, auth.id))
         console.log(applied);
+        console.log(data);
     }, [loading, data])
     return (
         <Layout>
             <Layout.Left>
-                <ProfileCard id={data?.getJob?.company.id} username={data?.getJob?.company.username} />
+                {data && <ProfileCard id={data?.getJob?.company.id} username={data?.getJob?.company.username} image={data?.getJob?.company?.image} userType={data?.getJob?.company?.userType} />}
             </Layout.Left>
             <Layout.Mid>
                 <VStack w='100%' h='100%'>
                     <Box bg='blackAlpha.200' p='10' display='flex' flexDirection='column' minH='fit-content' borderRadius='10px' w='100%'>
                         <Container flex='0 0 50px'>
-                            <Heading m='auto 0' fontSize='3xl' fontWeight='bold'>TITLE</Heading>
+                            <Heading m='auto 0' fontSize='3xl' fontWeight='bold'>{data?.getJob?.content.title}</Heading>
                         </Container>
                         <Divider borderColor='orange'></Divider>
                         <Container m='25px 0'>
-                            <Text>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Numquam, ducimus itaque quasi, ex reiciendis eos sed officia, debitis non consectetur at facilis possimus asperiores eum aspernatur tenetur quae maiores tempore impedit veritatis consequuntur similique ipsum? Animi quo tempore recusandae eligendi doloribus deserunt, reiciendis officia. Officia tempore nostrum odit iusto! Suscipit assumenda nam commodi quisquam aut voluptatibus reprehenderit fugit quam a quasi, qui odit. Vero, unde similique quam provident voluptatem reiciendis rerum natus quibusdam perferendis. Neque sequi aspernatur quia nisi cum aliquam saepe asperiores corporis suscipit vero? Deserunt suscipit aspernatur, esse quis numquam explicabo porro labore beatae debitis, reiciendis odit voluptatum.</Text>
+                            <Text>{data?.getJob?.content.body}</Text>
                         </Container>
 
                         <Container m='25px 0'>
-                            <Text>Salary - Salary</Text>
+                            <Text fontSize='xl' fontWeight='semibold'>{data?.getJob.averageSalary.from} HRK - {data?.getJob.averageSalary.to} HRK</Text>
                         </Container>
 
                         <Container m='25px 0'>
-                            <Text>Skills</Text>
+                            <b>Skills needed:</b>
+                            <HStack wrap='wrap'>
+
+
+                                {
+                                    data?.getJob?.skills.map((skill, index) => (
+                                        <SkillCard key={index} skill={skill}></SkillCard>
+                                    ))
+                                }
+                            </HStack>
                         </Container>
 
                         <Container m='25px 0'>
-                            <Text>Users applied</Text>
+                            <Text><b>Users applied</b></Text>
                             <HStack>
                                 {
                                     usersApplied?.map((user) => (
@@ -120,15 +137,17 @@ const Job = () => {
                             </HStack>
 
                         </Container>
-                        <Button m='25px 0' disabled={applied} isLoading={loading} onClick={() => handleApply()} colorScheme='orange' >Apply to job</Button>
+                        {auth.userType === 'USER' && <Button m='25px 0' disabled={applied} isLoading={loading} onClick={() => handleApply()} colorScheme='orange' >Apply to job</Button>}
                     </Box>
                 </VStack>
             </Layout.Mid>
             <Layout.Right>
                 <VStack w='100%' ml='20px'>
-                    <Container w='100%' borderRadius='10px' p={0} h='fit-content'>
-                        <Map />
-                    </Container>
+                    {data &&
+                        <Container w='100%' borderRadius='10px' p={0} h='fit-content'>
+                            <Map lat={data?.getJob.company.address.latlng.lat} lng={data?.getJob.company.address.latlng.lng} />
+                        </Container>
+                    }
                 </VStack>
             </Layout.Right>
         </Layout>

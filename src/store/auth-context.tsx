@@ -28,10 +28,7 @@ export const AuthContextProvider = (props: any): ReactElement => {
         navigate("/dashboard");
     }
 
-    const register = (token: string) => {
-        localStorage.setItem('token', token);
-        setToken(token);
-        setUser(jwt(tok))
+    const register = () => {
         navigate("/login");
     }
 

@@ -1,20 +1,21 @@
 import { useQuery } from '@apollo/client';
-import { Text, VStack } from '@chakra-ui/react';
+import { Spinner } from '@chakra-ui/react';
 import gql from 'graphql-tag';
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Suspense, useEffect } from 'react'
+import { useOutletContext, useParams } from 'react-router-dom'
+import Rooms from '../../../components/Chat/Rooms';
 import Layout from '../../../components/Layout';
-import ProfileCard from '../../../components/ProfileCard';
-import Languages from '../../../components/ProfileManagement/Languages';
-import PreviousJobs from '../../../components/ProfileManagement/PreviousJobs';
-import Skills from '../../../components/ProfileManagement/Skills';
-import UserDetails from '../../../components/ProfileManagement/UserDetails';
+import ProfileCard from '../../../components/Cards/ProfileCard';
+import { IProfileShort } from '../Dashboard';
+import CompanyProfile from './CompanyProfile';
+import UserProfile from './UserProfile';
 
 export interface IProfile {
     getUser: {
         username: string
         image: string
         email: string
+        userType: string
         address: {
             city: string
             postalCode: string
@@ -22,16 +23,39 @@ export interface IProfile {
             street: string
             streetNumber: string
         }
-        userInfo: {
-            education: string[]
+        userInfo?: {
+            education: Education[]
             languages: string[]
             skills: string[]
-            previousJobs: string[]
+            previousJobs: PrevJob[]
             firstName: string
             lastName: string
+        },
+        companyInfo?: {
+            companyName: string
+            numberOfEmployees: string
+            description: string
+            typeOfCompany: string
         }
     }
 
+}
+export interface PrevJob {
+    title: string
+    city?: string
+    companyName: string
+    period: {
+        from: number
+        to: number
+    }
+}
+export interface Education {
+    name: string
+    period: {
+        from: number
+        to: number
+    }
+    occupation: string
 }
 
 export const GET_USER = gql`
@@ -40,6 +64,7 @@ export const GET_USER = gql`
             username
             image
             email
+            userType
             address {
                 city
                 postalCode
@@ -48,41 +73,65 @@ export const GET_USER = gql`
                 streetNumber
             }
             userInfo {
-                education
+                education{
+                    name
+                    period{
+                        from
+                        to
+                    }
+                    occupation
+                }
                 languages
                 skills
-                previousJobs
+                previousJobs{
+                    title
+                    period{
+                        from
+                        to
+                    }
+                    companyName
+                    city
+                }
                 firstName
                 lastName
+            }
+            companyInfo{
+                description
+                numberOfEmployees
+                typeOfCompany
+                companyName
             }
 
         }
     }
 `;
 
+
+
 const Profile = () => {
     const { id } = useParams();
-    const { loading, data, error } = useQuery<IProfile>(GET_USER, { variables: { userId: id } });
+    const { loading, data, error, refetch } = useQuery<IProfile>(GET_USER, { variables: { userId: id }, fetchPolicy: 'no-cache' });
+    const authContext = useOutletContext<IProfileShort>()
     useEffect(() => {
         if (!loading) {
             console.log(data)
+
         }
     }, [data, loading])
+
     return (
         <Layout>
             <Layout.Left>
-                <ProfileCard id={id} username={data?.getUser.username} image={data?.getUser.image}></ProfileCard>
+                <ProfileCard id={id} username={data?.getUser.username} image={data?.getUser.image} userType={data?.getUser.userType}></ProfileCard>
             </Layout.Left>
             <Layout.Mid>
-                <VStack>
-                    <UserDetails id={id} username={data?.getUser.username} firstName={data?.getUser.userInfo.firstName} lastName={data?.getUser.userInfo.lastName} address={{ ...data?.getUser.address }} image={data?.getUser.image} />
-                    <PreviousJobs />
-                    <Languages title="Languages" editable={true} />
-                    <Skills />
-                </VStack>
+                {data && data.getUser.userType === 'USER' && <UserProfile values={data} refetch={refetch} />}
+                {data && data.getUser.userType === 'COMPANY' && <CompanyProfile values={data} refetch={refetch} />}
             </Layout.Mid>
             <Layout.Right>
-                <Text>Work in progress</Text>
+                <Suspense fallback={<Spinner></Spinner>}>
+                    <Rooms id={authContext?.id} />
+                </Suspense>
             </Layout.Right>
         </Layout>
     )

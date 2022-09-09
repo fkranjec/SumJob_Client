@@ -1,7 +1,6 @@
-import { VStack, Flex, Show, Container, Text, ScaleFade } from '@chakra-ui/react'
+import { VStack, Flex, Show, Container } from '@chakra-ui/react'
 import React from 'react'
 import { scrollBarStyle } from '../utils/styles';
-import ProfileCard from './ProfileCard';
 
 const Layout = ({ children }: any) => {
     return (
@@ -26,7 +25,7 @@ Layout.Mid = (props: any) => (
 )
 Layout.Right = (props: any) => (
     <Show above="lg">
-        <VStack flex='0 0 30%' p='3'>
+        <VStack maxHeight='calc(100vh - 70px)' height='fit-content' flex='0 0 30%' p='3'>
             {props.children}
         </VStack>
     </Show>

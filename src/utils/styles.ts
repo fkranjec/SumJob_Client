@@ -4,10 +4,11 @@ export const scrollBarStyle = {
         width: '4px',
     },
     '&::-webkit-scrollbar-track': {
+
         width: '6px',
     },
     '&::-webkit-scrollbar-thumb': {
-        margin: '10px 0',
+        margin: '30px 0',
         background: "orange",
         borderRadius: '20px',
     },

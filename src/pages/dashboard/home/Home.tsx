@@ -1,22 +1,24 @@
 import { VStack, Spinner } from '@chakra-ui/react'
 import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
-import { Suspense, lazy, FC, useEffect } from 'react';
+import { Suspense, lazy, FC, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { InView } from 'react-intersection-observer';
 
-import Post from '../../../components/Post'
+import JobCard from '../../../components/Cards/JobCard'
 import Layout from '../../../components/Layout';
 import { IProfileShort } from '../Dashboard';
 
-const ProfileCard = lazy(() => import('../../../components/ProfileCard'));
+const ProfileCard = lazy(() => import('../../../components/Cards/ProfileCard'));
 const Rooms = lazy(() => import('../../../components/Chat/Rooms'));
 
 const GET_JOBS = gql`
     query GetJobs($offset:Int, $limit: Int) {
         getJobs(offset:$offset, limit: $limit) {
-                id
-                name
+            totalCount
+            jobs{        
+                id           
+                name            
                 content{
                     title
                     body
@@ -32,50 +34,81 @@ const GET_JOBS = gql`
                     username
                     image
                 }
+            }          
         }
     }
 `;
 
-const Home: FC = () => {
-    const limit = 3;
-    let offset = 0;
+interface JobsResponse {
+    getJobs: {
+        jobs: any[]
+        totalCount: number
+    }
 
-    const { loading, data, fetchMore } = useQuery(GET_JOBS, { variables: { offset: offset, limit: limit } });
+}
+
+const Home: FC = () => {
+    let limit = 3;
+    let offset = 0;
+    let changed: boolean = false;
+    const [jobs, setJobs] = useState([]);
+
+    const { loading, data, fetchMore, error } = useQuery<JobsResponse>(GET_JOBS, {
+        variables: { offset: offset, limit: limit }, fetchPolicy: 'no-cache', onCompleted(res) {
+            setJobs(res.getJobs.jobs)
+        },
+    });
 
     const authContext = useOutletContext<IProfileShort>();
 
     useEffect(() => {
-        console.log(data)
-    }, [data])
+    }, [data, loading])
     return (
         <Layout>
 
             <Layout.Left>
                 <Suspense fallback={<Spinner></Spinner>}>
-                    <ProfileCard id={authContext?.id} username={authContext?.username} image={authContext?.image} />
+                    <ProfileCard id={authContext?.id} userType={authContext?.userType} username={authContext?.username} image={authContext?.image} />
                 </Suspense>
             </Layout.Left>
 
             <Layout.Mid>
                 <VStack flexDirection='column'>
                     {
-                        !loading && data && data?.getJobs.map((job: any) => (
-                            <Post title={job.name} id={job.id} key={job.id} content={{ title: job.content.title, body: job.content.body, footer: job.content.footer }} salary={{ from: job.averageSalary.from, to: job.averageSalary.to }} user={{ ...job.company }} createdAt={job.timeCreated} />
+                        !loading && jobs?.length !== 0 && jobs?.map((job: any) => (
+                            <JobCard
+                                title={job.name}
+                                id={job.id}
+                                key={job.id}
+                                content={{ title: job?.content?.title, body: job.content?.body, footer: job.content?.footer }}
+                                salary={{ from: job.averageSalary?.from, to: job.averageSalary?.to }}
+                                user={{ ...job.company }}
+                                createdAt={job.timeCreated}
+                            />
                         ))
                     }
                     {
-                        !loading && data && (
+                        !loading && jobs?.length !== 0 && (
                             <InView
                                 onChange={async (inView) => {
-                                    offset = offset + limit;
-                                    console.log(inView)
+                                    if (limit >= data?.getJobs.totalCount) {
+                                        limit = data?.getJobs.totalCount
+                                    } else {
+                                        //limit += limit;
+                                        limit = data?.getJobs.totalCount
+                                    }
                                     if (inView) {
-                                        await fetchMore({
+                                        console.log(inView);
+                                        const { data, error } = await fetchMore({
                                             variables: {
                                                 offset: offset,
                                                 limit: limit
                                             }
                                         })
+                                        if (jobs.length <= data.getJobs.totalCount) {
+                                            setJobs([...data?.getJobs.jobs])
+                                        }
+
                                     }
                                 }}
                             ></InView>

@@ -14,6 +14,7 @@ import Job from "./pages/dashboard/job/Job"
 import Register from "./pages/register/Register"
 import Landing from "./pages/landing/Landing"
 import RegisterCompany from "./pages/register-company/RegisterCompany"
+import JobsByUser from "./pages/dashboard/jobsByUser/JobsByUser"
 
 const Dashboard = React.lazy(() => import("./pages/dashboard/Dashboard"))
 const Home = React.lazy(() => import("./pages/dashboard/home/Home"))
@@ -41,6 +42,7 @@ export const App = () => {
             <Route path="/dashboard/jobs" element={<Jobs />} />
             <Route path="/dashboard/job/:id" element={<Job />} />
             <Route path="/dashboard/profile/:id" element={<Profile />} />
+            <Route path="/dashboard/usersPerJob" element={<JobsByUser />} />
           </Route>
         </Routes>
       </AuthContextProvider>

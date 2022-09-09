@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Route, Navigate } from 'react-router-dom'
+import React from 'react'
+import { Navigate } from 'react-router-dom'
 import { AuthConsumer } from '../store/auth-context'
 
 const ProtectedRoute = (props: any) => {
