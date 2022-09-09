@@ -3,7 +3,7 @@ import { VStack, Accordion, Box, Text, AccordionItem, AccordionButton, Accordion
 import gql from 'graphql-tag'
 import React, { useState } from 'react'
 import { InView } from 'react-intersection-observer'
-import CompanyCard from '../../../components/CompanyCard'
+import CompanyCard from '../../../components/Cards/CompanyCard'
 import Layout from '../../../components/Layout'
 
 const GET_COMPANIES = gql`

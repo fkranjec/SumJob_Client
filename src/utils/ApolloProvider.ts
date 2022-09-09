@@ -6,7 +6,7 @@ import { createClient } from 'graphql-ws';
 import { getMainDefinition, offsetLimitPagination } from '@apollo/client/utilities';
 
 const httpLink = createHttpLink({
-    uri: 'http://localhost:5000/graphql'
+    uri: 'https://62a1-46-234-89-43.eu.ngrok.io/graphql'
 })
 
 const wsLink = new GraphQLWsLink(createClient({

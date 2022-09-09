@@ -1,7 +1,7 @@
 import { Center, VStack, Heading, Input, InputGroup, InputRightElement, Button, HStack, Container, Menu, Textarea, Select } from '@chakra-ui/react'
 import React from 'react'
 import loginImg from '../../assets/login.jpg';
-import { Autocomplete, StandaloneSearchBox } from '@react-google-maps/api';
+import { Autocomplete, StandaloneSearchBox, useJsApiLoader } from '@react-google-maps/api';
 import { RegisterControl } from './CompanyDetails';
 import { getAddressObject } from '../../utils/transformations';
 
@@ -28,6 +28,7 @@ export interface ICompanyDesc {
 }
 
 const CompanyDescDetails = (props: ICompanyDescControls) => {
+
     let searchBox;
     const onLoad = ref => searchBox = ref;
 

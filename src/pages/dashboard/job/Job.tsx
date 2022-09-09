@@ -6,7 +6,8 @@ import { useOutletContext, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Layout from '../../../components/Layout';
 import Map from '../../../components/Map';
-import ProfileCard, { IProfileShort } from '../../../components/ProfileCard';
+import ProfileCard, { IProfileShort } from '../../../components/Cards/ProfileCard';
+import SkillCard from '../../../components/Cards/SkillCard';
 
 const GET_JOB = gql`
     query getJob($jobId: ID!){
@@ -113,16 +114,20 @@ const Job = () => {
                         </Container>
 
                         <Container m='25px 0'>
-                            Skills needed:
-                            {
-                                data?.getJob?.skills.map((skill, index) => (
-                                    <Text key={index}>{skill}</Text>
-                                ))
-                            }
+                            <b>Skills needed:</b>
+                            <HStack wrap='wrap'>
+
+
+                                {
+                                    data?.getJob?.skills.map((skill, index) => (
+                                        <SkillCard key={index} skill={skill}></SkillCard>
+                                    ))
+                                }
+                            </HStack>
                         </Container>
 
                         <Container m='25px 0'>
-                            <Text>Users applied</Text>
+                            <Text><b>Users applied</b></Text>
                             <HStack>
                                 {
                                     usersApplied?.map((user) => (

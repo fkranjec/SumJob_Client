@@ -44,6 +44,11 @@ const PreviousJobs = (props: IPreviousJobs) => {
         });
     }
 
+    const handleClose = () => {
+        setSelectedJobs(props.selected ? props.selected : []);
+        onClose();
+    }
+
     useEffect(() => {
         setSelectedJobs(props.selected ? props.selected : []);
     }, [props])
@@ -74,21 +79,30 @@ const PreviousJobs = (props: IPreviousJobs) => {
                         {t('prevJovs')}
                     </ModalHeader>
                     <ModalBody>
-                        <HStack>
-                            <Input value={prevJob.title} onChange={(e) => setPrevJob({ ...prevJob, title: e.target.value })} placeholder='Insert previous jobs'></Input>
+                        <VStack>
+                            <Input value={prevJob.title} onChange={(e) => setPrevJob({ ...prevJob, title: e.target.value })} placeholder='Insert previous job title'></Input>
+                            <Input value={prevJob.companyName} onChange={(e) => setPrevJob({ ...prevJob, companyName: e.target.value })} placeholder='Insert previous company name'></Input>
+                            <Input value={prevJob.city} onChange={(e) => setPrevJob({ ...prevJob, city: e.target.value })} placeholder='Insert previous job city'></Input>
+                            <HStack w='100%'>
+                                <Input type='number' value={prevJob.period.from} onChange={(e) => setPrevJob({ ...prevJob, period: { ...prevJob.period, from: parseInt(e.target.value) } })} placeholder='Insert previous job period from'></Input>
+                                <Input type='number' value={prevJob.period.to} onChange={(e) => setPrevJob({ ...prevJob, period: { ...prevJob.period, to: parseInt(e.target.value) } })} placeholder='Insert previous job to'></Input>
+                            </HStack>
                             <Button colorScheme='orange' onClick={onPrevJobSelected}>Add</Button>
-                        </HStack>
+                        </VStack>
 
                         <Box>
                             <HStack wrap='wrap' gap='10px' p={10}>
                                 {
                                     isOpen && selectedJobs.map((job, index) => (
                                         <Box display='flex' key={index} w='fit-content' flex='0 0 fit-content' p={2} bg='rgba(255,134,38,1.00)' borderRadius='10px'>
-                                            <Text>{job.title}</Text>
-                                            <Text>{job.companyName}</Text>
-                                            <Text>{job.period.from} - {job.period.to}</Text>
-                                            <Text>{job.city}</Text>
-                                            <CloseIcon w='10px' m='auto 10px' onClick={() => { setSelectedJobs((jobs) => jobs.filter((lang, idx) => { return idx !== index })) }} />
+                                            <VStack>
+                                                <Text>{job.title}</Text>
+                                                <Text>{job.companyName}</Text>
+                                                <Text>{job.period.from} - {job.period.to}</Text>
+                                                <Text>{job.city}</Text>
+                                            </VStack>
+
+                                            <CloseIcon _hover={{ cursor: "pointer" }} w='10px' m='auto 10px' onClick={() => { setSelectedJobs((jobs) => jobs.filter((lang, idx) => { return idx !== index })) }} />
                                         </Box>
                                     ))
                                 }
@@ -96,7 +110,7 @@ const PreviousJobs = (props: IPreviousJobs) => {
                         </Box>
                     </ModalBody>
                     <ModalFooter>
-                        <Button onClick={onClose}>{t('modal.close')}</Button>
+                        <Button onClick={handleClose}>{t('modal.close')}</Button>
                         <Button onClick={handleSave}>{t('modal.save')}</Button>
                     </ModalFooter>
                 </ModalContent>

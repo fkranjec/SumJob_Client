@@ -23,11 +23,11 @@ const CompanyCard = (props: ICompanyCard) => {
                 <Text>{props.description}</Text>
                 <Divider borderColor='orange'></Divider>
                 <HStack justifyContent='space-between'>
-                    <Text>Number of employees: {props.numberOfEmployees}</Text>
-                    <Text>Type of company: {props.typeOfCompany}</Text>
+                    <Text><b>Number of employees:</b> {props.numberOfEmployees}</Text>
+                    <Text><b>Type of company:</b> {props.typeOfCompany}</Text>
                 </HStack>
 
-                <Button mt='auto' marginLeft='auto' onClick={() => navigate('/dashboard/profile/' + props.id)}>Go to profile!</Button>
+                <Button colorScheme='orange' mt='auto' marginLeft='auto' onClick={() => navigate('/dashboard/profile/' + props.id)}>Go to profile!</Button>
             </Box>
         </VStack>
     )

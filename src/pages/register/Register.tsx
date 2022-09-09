@@ -43,9 +43,7 @@ const Register: React.FunctionComponent<Register> = () => {
     });
     const [registerUser, { loading }] = useMutation(REGISTER, {
         update(_, result) {
-            console.log(result)
-            const { token } = result.data.register;
-            authContext.register(token);
+            authContext.register();
             toast.success("Registration Successful");
         },
         onError(err) {
@@ -65,7 +63,7 @@ const Register: React.FunctionComponent<Register> = () => {
                 }
             }
         },
-        variables: { registerInput: { username: register.username, password: register.password, confirmPassword: register.confirmPassword, email: register.email } }
+        variables: { registerInput: { username: register.username, password: register.password, confirmPassword: register.confirmPassword, email: register.email, userInfo: { firstName: register.firstName, lastName: register.lastName } } }
     });
 
     const handleChange = (input: string) => (e: any) => {

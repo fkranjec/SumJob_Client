@@ -5,7 +5,7 @@ import { Suspense, useEffect } from 'react'
 import { useOutletContext, useParams } from 'react-router-dom'
 import Rooms from '../../../components/Chat/Rooms';
 import Layout from '../../../components/Layout';
-import ProfileCard from '../../../components/ProfileCard';
+import ProfileCard from '../../../components/Cards/ProfileCard';
 import { IProfileShort } from '../Dashboard';
 import CompanyProfile from './CompanyProfile';
 import UserProfile from './UserProfile';

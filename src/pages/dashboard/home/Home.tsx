@@ -5,11 +5,11 @@ import { Suspense, lazy, FC, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { InView } from 'react-intersection-observer';
 
-import Post from '../../../components/Post'
+import JobCard from '../../../components/Cards/JobCard'
 import Layout from '../../../components/Layout';
 import { IProfileShort } from '../Dashboard';
 
-const ProfileCard = lazy(() => import('../../../components/ProfileCard'));
+const ProfileCard = lazy(() => import('../../../components/Cards/ProfileCard'));
 const Rooms = lazy(() => import('../../../components/Chat/Rooms'));
 
 const GET_JOBS = gql`
@@ -55,9 +55,7 @@ const Home: FC = () => {
 
     const { loading, data, fetchMore, error } = useQuery<JobsResponse>(GET_JOBS, {
         variables: { offset: offset, limit: limit }, fetchPolicy: 'no-cache', onCompleted(res) {
-            console.log(res);
             setJobs(res.getJobs.jobs)
-            console.log(jobs);
         },
     });
 
@@ -78,7 +76,7 @@ const Home: FC = () => {
                 <VStack flexDirection='column'>
                     {
                         !loading && jobs?.length !== 0 && jobs?.map((job: any) => (
-                            <Post
+                            <JobCard
                                 title={job.name}
                                 id={job.id}
                                 key={job.id}
@@ -93,21 +91,24 @@ const Home: FC = () => {
                         !loading && jobs?.length !== 0 && (
                             <InView
                                 onChange={async (inView) => {
-                                    if (limit < data?.getJobs.totalCount) {
-                                        limit += limit;
+                                    if (limit >= data?.getJobs.totalCount) {
+                                        limit = data?.getJobs.totalCount
                                     } else {
+                                        //limit += limit;
                                         limit = data?.getJobs.totalCount
                                     }
                                     if (inView) {
+                                        console.log(inView);
                                         const { data, error } = await fetchMore({
                                             variables: {
                                                 offset: offset,
                                                 limit: limit
                                             }
                                         })
-                                        if (jobs.length < data.getJobs.totalCount) {
+                                        if (jobs.length <= data.getJobs.totalCount) {
                                             setJobs([...data?.getJobs.jobs])
                                         }
+
                                     }
                                 }}
                             ></InView>

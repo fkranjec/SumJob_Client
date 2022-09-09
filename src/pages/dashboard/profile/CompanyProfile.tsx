@@ -47,9 +47,9 @@ const CompanyProfile = (props: ICompanyProfile) => {
 
     return (
         <VStack>
-            {data && <CompanyDetails values={{ ...props.values }} editable={authContex.id !== id} updateCompany={updateCompany} />}
-            {data && <CompanyJobs jobs={[...data?.jobsByCompany]} editable={authContex.id !== id} addNewJob={newJob} deleteJob={deleteJob} />}
-            {data && authContex.id !== id && <AddNewJob />}
+            {data && <CompanyDetails values={{ ...props.values }} editable={authContex.id === id} updateCompany={updateCompany} />}
+            {data && <CompanyJobs jobs={[...data?.jobsByCompany]} editable={authContex.id === id} addNewJob={newJob} deleteJob={deleteJob} />}
+            {data && authContex.id === id && <AddNewJob />}
         </VStack>
     )
 }

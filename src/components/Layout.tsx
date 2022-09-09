@@ -25,7 +25,7 @@ Layout.Mid = (props: any) => (
 )
 Layout.Right = (props: any) => (
     <Show above="lg">
-        <VStack flex='0 0 30%' p='3'>
+        <VStack maxHeight='calc(100vh - 70px)' height='fit-content' flex='0 0 30%' p='3'>
             {props.children}
         </VStack>
     </Show>

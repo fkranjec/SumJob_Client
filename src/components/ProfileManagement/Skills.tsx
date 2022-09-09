@@ -4,6 +4,7 @@ import { CloseIcon, EditIcon } from '@chakra-ui/icons'
 import { useTranslation } from 'react-i18next'
 import gql from 'graphql-tag'
 import { useLazyQuery } from '@apollo/client'
+import SkillCard from '../Cards/SkillCard'
 
 interface SkillsProps {
     editable?: boolean
@@ -61,9 +62,7 @@ const Skills = (props: SkillsProps) => {
                 <HStack wrap='wrap' gap='10px' p={10}>
                     {
                         selectedSkills.map((skill, index) => (
-                            <Box key={index} w='fit-content' flex='0 0 fit-content' p={2} bg='rgba(255,134,38,1.00)' borderRadius='10px'>
-                                <Text >{skill}</Text>
-                            </Box>
+                            <SkillCard key={index} skill={skill}></SkillCard>
 
                         ))
                     }
@@ -87,11 +86,10 @@ const Skills = (props: SkillsProps) => {
                             <HStack wrap='wrap' gap='10px' p={10}>
                                 {
                                     selectedSkills.map((skill, index) => (
-                                        <Box display='flex' key={index} w='fit-content' flex='0 0 fit-content' p={2} bg='rgba(255,134,38,1.00)' borderRadius='10px'>
-
-                                            <Text  >{skill}</Text>
+                                        <SkillCard key={index} skill={skill}>
                                             <CloseIcon w='10px' m='auto 10px' onClick={() => setSelectedSkills((skills) => skills.filter((lang, idx) => { return idx !== index }))} />
-                                        </Box>
+                                        </SkillCard>
+
                                     ))
                                 }
                             </HStack>

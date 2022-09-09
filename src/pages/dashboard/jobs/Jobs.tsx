@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import React, { useState } from 'react'
 import { InView } from 'react-intersection-observer';
 import Layout from '../../../components/Layout'
-import Post from '../../../components/Post'
+import JobCard from '../../../components/Cards/JobCard'
 
 const GET_JOBS = gql`
     query GetJobs($offset:Int, $limit: Int) {
@@ -144,7 +144,7 @@ const Jobs = () => {
                 <VStack>
                     {
                         !loading && jobs?.length !== 0 && jobs?.map((job: any) => (
-                            <Post title={job.name} id={job.id} key={job.id} content={{ title: job?.content?.title, body: job.content?.body, footer: job.content?.footer }} salary={{ from: job.averageSalary?.from, to: job.averageSalary?.to }} user={{ ...job.company }} createdAt={job.timeCreated} />
+                            <JobCard title={job.name} id={job.id} key={job.id} content={{ title: job?.content?.title, body: job.content?.body, footer: job.content?.footer }} salary={{ from: job.averageSalary?.from, to: job.averageSalary?.to }} user={{ ...job.company }} createdAt={job.timeCreated} />
                         ))
                     }
                     {

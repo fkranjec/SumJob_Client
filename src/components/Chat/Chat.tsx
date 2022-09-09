@@ -1,5 +1,5 @@
 import { SubscriptionResult, useMutation, useQuery, useSubscription } from '@apollo/client';
-import { Container, Circle, VStack, Input, Button, Box, Center, Text, Avatar } from '@chakra-ui/react';
+import { Container, Circle, VStack, Input, Button, Box, Center, Text, Avatar, Textarea } from '@chakra-ui/react';
 import gql from 'graphql-tag';
 import React, { useEffect, useRef, useState } from 'react'
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
@@ -159,8 +159,6 @@ const Chat = (props: Chat) => {
                     <Box>
                         <VStack minHeight='200px' flexDirection='column-reverse' maxHeight='200px' overflowY='scroll' css={scrollBarStyle} p={0}>
                             <VStack w='100%' m={0}>
-
-
                                 {
                                     texts && texts.map((text: any) => (
                                         <TextMessage id={text.id} body={text.content} user={text.author?.id} key={text.id} createdAt={text.createdAt} />
@@ -169,9 +167,9 @@ const Chat = (props: Chat) => {
                                 <div ref={(el) => { bottomRef.current = el }}></div>
                             </VStack>
                         </VStack>
-                        <Box display='flex' flexDirection='row'>
-                            <Input onChange={(e) => setNewMessage(e.target.value)} value={newMessage} />
-                            <Button onClick={() => handleNewMessage()}>SEND</Button>
+                        <Box display='flex' h='100%' flexDirection='row'>
+                            <Textarea onChange={(e) => setNewMessage(e.target.value)} value={newMessage} />
+                            <Button m='auto 0' onClick={() => handleNewMessage()}>SEND</Button>
                         </Box>
                     </Box>
                 )
