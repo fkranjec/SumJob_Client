@@ -102,13 +102,19 @@ const UserDetails = (props: IUserDetails) => {
                     {user && user.editable && <EditIcon onClick={onOpen} />}
                 </HStack>
                 {user &&
-                    <VStack m='auto 0' h='100%'>
-                        <Text><b>Username:</b> {user.username}</Text>
-                        <Text><b>First name:</b> {user.userInfo.firstName}</Text>
-                        <Text><b>Last name:</b> {user.userInfo.lastName}</Text>
-                        <Text><b>City:</b> {user.address?.city}</Text>
-                        <Text><b>Street:</b> {user.address?.city}</Text>
-                    </VStack>
+                    <HStack justifyContent='space-around' w='100%' h='100%'>
+                        <VStack m='auto 0'>
+                            <Text><b>Username:</b> {user.username}</Text>
+                            <Text><b>First name:</b> {user.userInfo.firstName}</Text>
+                            <Text><b>Last name:</b> {user.userInfo.lastName}</Text>
+                        </VStack>
+                        <VStack m='auto 0'>
+                            <Text><b>City:</b> {user.address?.city}</Text>
+                            <Text><b>Street:</b> {user.address?.street}</Text>
+                            <Text><b>Street number:</b> {user.address?.postalCode}</Text>
+                        </VStack>
+                    </HStack>
+
                 }
             </VStack>
             <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false}>

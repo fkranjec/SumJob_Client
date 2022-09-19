@@ -33,7 +33,7 @@ const Post: FC<PostProps> = (props: PostProps) => {
                 <Text fontSize='sm' m='auto 10px'>{props?.user?.username}</Text>
                 <Text m='auto 0' ml='auto' >{new Date(props.createdAt).toDateString()}</Text>
             </Container>
-            <Container flex='0 0 80%' mt='0px !important' p={3} m='0px' display='flex' flexDirection='column'>
+            <Container flex='0 0 80%' mt='0px !important' p={3} m='0px' w='100%' display='flex' flexDirection='column'>
                 <Text fontWeight='bold' fontSize='2xl'>{props?.content?.title}</Text>
                 <Divider borderColor='tomato' m='auto 0'></Divider>
                 <Text>{props.content?.body}</Text>

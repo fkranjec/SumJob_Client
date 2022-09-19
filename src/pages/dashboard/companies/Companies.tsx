@@ -7,8 +7,8 @@ import CompanyCard from '../../../components/Cards/CompanyCard'
 import Layout from '../../../components/Layout'
 
 const GET_COMPANIES = gql`
-    query getCompanies($offset: Int!, $limit: Int!){
-        getCompanies(offset: $offset, limit: $limit){
+    query getCompanies($offset: Int!, $limit: Int!, $filters: FilterInput){
+        getCompanies(offset: $offset, limit: $limit, filters: $filters){
             totalCount
             companies{
                 id
@@ -38,9 +38,13 @@ const Companies = () => {
     let offset = 0;
     let changed: boolean = false;
     const [companies, setCompanies] = useState([]);
+    const [filter, setFilter] = useState({
+        text: ''
+    })
 
     const { loading, data, fetchMore, error } = useQuery<CompaniesResponse>(GET_COMPANIES, {
-        variables: { offset: offset, limit: limit }, fetchPolicy: 'no-cache', onCompleted(res) {
+        variables: { offset: offset, limit: limit, filters: filter }, fetchPolicy: 'no-cache', onCompleted(res) {
+            console.log(filter)
             setCompanies(res.getCompanies.companies)
         },
     });
@@ -60,71 +64,7 @@ const Companies = () => {
                             </AccordionButton>
 
                             <AccordionPanel>
-                                <Input placeholder='Enter text here'></Input>
-                            </AccordionPanel>
-                        </AccordionItem>
-                    </Accordion>
-
-                    <Accordion defaultIndex={[1]} allowMultiple w='100%'>
-                        <AccordionItem>
-
-                            <AccordionButton w='100%' flex='1'>
-                                <Box flex='1' textAlign='left'>
-                                    Salary
-                                </Box>
-                                <AccordionIcon />
-                            </AccordionButton>
-
-                            <AccordionPanel>
-                                <Input placeholder='Enter text here'></Input>
-                            </AccordionPanel>
-                        </AccordionItem>
-                    </Accordion>
-
-                    <Accordion defaultIndex={[1]} allowMultiple w='100%'>
-                        <AccordionItem>
-
-                            <AccordionButton w='100%' flex='1'>
-                                <Box flex='1' textAlign='left'>
-                                    Location
-                                </Box>
-                                <AccordionIcon />
-                            </AccordionButton>
-
-                            <AccordionPanel>
-                                <Input placeholder='Enter text here'></Input>
-                            </AccordionPanel>
-                        </AccordionItem>
-                    </Accordion>
-
-                    <Accordion defaultIndex={[1]} allowMultiple w='100%'>
-                        <AccordionItem>
-
-                            <AccordionButton w='100%' flex='1'>
-                                <Box flex='1' textAlign='left'>
-                                    Skills
-                                </Box>
-                                <AccordionIcon />
-                            </AccordionButton>
-
-                            <AccordionPanel>
-                                <Input placeholder='Enter text here'></Input>
-                            </AccordionPanel>
-                        </AccordionItem>
-                    </Accordion>
-
-                    <Accordion defaultIndex={[1]} allowMultiple w='100%'>
-                        <AccordionItem>
-
-                            <AccordionButton w='100%' flex='1'>
-                                <Box flex='1' textAlign='left'>
-                                    Languages
-                                </Box>
-                                <AccordionIcon />
-                            </AccordionButton>
-
-                            <AccordionPanel>
-                                <Input placeholder='Enter text here'></Input>
+                                <Input value={filter.text} onChange={(e) => setFilter({ ...filter, text: e.target.value })} placeholder='Enter text here'></Input>
                             </AccordionPanel>
                         </AccordionItem>
                     </Accordion>

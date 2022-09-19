@@ -23,7 +23,7 @@ interface Register {
         city: string,
         street: string,
         streetNumber: string,
-        postalCode: number,
+        postalCode: string,
         latlng: {
             lat: number,
             lng: number
@@ -60,7 +60,7 @@ const RegisterCompany: React.FunctionComponent<Register> = () => {
             city: '',
             street: '',
             streetNumber: '',
-            postalCode: 0,
+            postalCode: '',
             latlng: {
                 lat: 0,
                 lng: 0

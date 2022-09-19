@@ -56,19 +56,25 @@ const CompanyDetails = (props: ICompanyDetails) => {
                     {user && user.editable && <EditIcon onClick={onOpen} />}
                 </HStack>
                 {user &&
-                    <HStack h='100%' w='100%' p={10} justifyContent='space-around'>
-                        <VStack>
-                            <Text>Company name: {user.values.getUser?.companyInfo?.companyName}</Text>
-                            <Text>Company description: {user.values.getUser?.companyInfo?.description}</Text>
-                            <Text>Type of company: {user.values.getUser?.companyInfo?.typeOfCompany}</Text>
-                            <Text>Number of employees: {user.values.getUser?.companyInfo?.numberOfEmployees}</Text>
-                        </VStack>
-                        <VStack>
-                            <Text>City: {user.values.getUser.address.city}</Text>
-                            <Text>Street: {user.values.getUser.address.street} {user.values.getUser.address.streetNumber}</Text>
-                            <Text>Postal code: {user.values.getUser.address.postalCode}</Text>
-                        </VStack>
-                    </HStack>
+
+                    <VStack>
+
+
+                        <Text p='5'>{user.values.getUser?.companyInfo?.description}</Text>
+                        <HStack h='100%' w='100%' p={10} justifyContent='space-around'>
+                            <VStack>
+                                <Text><b>Company name:</b> {user.values.getUser?.companyInfo?.companyName}</Text>
+
+                                <Text><b>Type of company:</b> {user.values.getUser?.companyInfo?.typeOfCompany}</Text>
+                                <Text><b>Number of employees:</b> {user.values.getUser?.companyInfo?.numberOfEmployees}</Text>
+                            </VStack>
+                            <VStack>
+                                <Text><b>City:</b> {user.values.getUser.address.city}</Text>
+                                <Text><b>Street:</b> {user.values.getUser.address.street} {user.values.getUser.address.streetNumber}</Text>
+                                <Text><b>Postal code:</b> {user.values.getUser.address.postalCode}</Text>
+                            </VStack>
+                        </HStack>
+                    </VStack>
                 }
             </VStack>
             <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false}>

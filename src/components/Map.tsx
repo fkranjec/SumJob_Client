@@ -1,5 +1,5 @@
 import { GoogleMap, LoadScript, Marker, useJsApiLoader } from '@react-google-maps/api'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface IMap {
     lat?: number,
@@ -8,21 +8,24 @@ interface IMap {
 
 const Map = ({ lat, lng }: IMap) => {
 
-    if (lat === null || lng === null) {
-        lat = 46.30;
-        lng = 16.33;
-    }
+    const [latLng, setLatLng] = useState<IMap>({
+        lat: 46.30,
+        lng: 16.33
+    })
+
+    useEffect(() => {
+        console.log(lat);
+        setLatLng({ lat: lat, lng: lng })
+    }, [lat, lng])
 
     return (
-        <>
-            <GoogleMap
-                mapContainerStyle={{ width: '100%', height: '500px' }}
-                center={{ lat: lat, lng: lng }}
-                zoom={13}
-            >
-                <Marker position={{ lat: lat, lng: lng }}></Marker>
-            </GoogleMap >)
-        </>
+        <GoogleMap
+            mapContainerStyle={{ width: '100%', height: '500px' }}
+            center={{ lat: latLng.lat, lng: latLng.lng }}
+            zoom={13}
+        >
+            <Marker position={{ lat: latLng.lat, lng: latLng.lng }}></Marker>
+        </GoogleMap >
     )
 }
 

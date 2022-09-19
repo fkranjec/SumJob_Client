@@ -3,21 +3,45 @@ import React from 'react'
 import { RegisterControl } from './UserDetails'
 import loginImg from '../../assets/login.jpg';
 import { Autocomplete, StandaloneSearchBox } from '@react-google-maps/api';
+import { getAddressObject } from '../../utils/transformations';
 
 interface IPersonalDetailsControls extends RegisterControl {
     values: IPersonalDetails
+    handleChange: (input: string) => (e: any) => void
     register: () => void
 }
 
 export interface IPersonalDetails {
-
+    address: any,
+    description: string
 }
 
 const PersonalDetails = (props: IPersonalDetailsControls) => {
     let searchBox;
     const onLoad = ref => searchBox = ref;
 
-    const onPlacesChanged = () => console.log(searchBox.getPlace());
+    const onPlacesChanged = () => {
+        console.log(searchBox.getPlace());
+        const place = getAddressObject(searchBox.getPlace().address_components);
+        const address = {
+            target: {
+                value: {
+                    city: place.city,
+                    street: place.street,
+                    streetNumber: place.streetNumber,
+                    postalCode: parseInt(place.postalCode),
+                    latlng: {
+                        lat: searchBox.getPlace().geometry.location.lat(),
+                        lng: searchBox.getPlace().geometry.location.lng()
+                    },
+                    state: place.state
+                }
+
+            }
+        }
+        console.log(address);
+        props.handleChange('address')(address)
+    };
     return (
         <Center bg='white' h='100vh' w='100vw' p='0'>
             <HStack boxShadow='dark-lg' p='0px' bg='white' h='800px' minW='1200px' margin='auto 0' borderRadius='30px'>

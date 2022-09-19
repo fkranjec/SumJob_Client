@@ -6,7 +6,8 @@ import { scrollBarStyle } from '../../utils/styles'
 import Chat from './Chat'
 
 interface Rooms {
-    id?: string
+    id?: string,
+    callback?: () => any
 }
 
 const GET_ROOMS = gql`
@@ -21,15 +22,15 @@ const GET_ROOMS = gql`
 
 const Rooms = (props: Rooms) => {
 
-    const { data, loading } = useQuery(GET_ROOMS, { variables: { user: props?.id } })
+    const { data, refetch, loading } = useQuery(GET_ROOMS, { variables: { user: props?.id } })
     const [rooms, setRooms] = useState([]);
     useEffect(() => {
-        console.log("TEST");
         if (!loading) {
             console.log(data?.roomsByUser)
             setRooms(data?.roomsByUser)
         }
-    }, [loading])
+        refetch();
+    }, [loading, props, refetch])
     return (
         <Container overflowY='scroll' css={scrollBarStyle} h='100%' p={3} bg='blackAlpha.200' borderRadius='10px'>
             <VStack h='100%' >

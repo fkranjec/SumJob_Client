@@ -1,5 +1,5 @@
-import { useQuery } from '@apollo/client';
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Center, Container, Input, Text, VStack } from '@chakra-ui/react'
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Center, Container, Input, Text, VStack, RangeSlider, RangeSliderFilledTrack, RangeSliderThumb, RangeSliderTrack, Button, HStack } from '@chakra-ui/react'
 import gql from 'graphql-tag';
 import React, { useState } from 'react'
 import { InView } from 'react-intersection-observer';
@@ -7,8 +7,8 @@ import Layout from '../../../components/Layout'
 import JobCard from '../../../components/Cards/JobCard'
 
 const GET_JOBS = gql`
-    query GetJobs($offset:Int, $limit: Int) {
-        getJobs(offset:$offset, limit: $limit) {
+    query GetJobsFilters($offset:Int, $limit: Int, $filters: FilterInput) {
+        getJobsFilters(offset:$offset, limit: $limit, filters: $filters) {
             totalCount
             jobs{        
             id           
@@ -34,7 +34,7 @@ const GET_JOBS = gql`
 `;
 
 interface JobsResponse {
-    getJobs: {
+    getJobsFilters: {
         jobs: any[]
         totalCount: number
     }
@@ -45,11 +45,18 @@ const Jobs = () => {
     let limit = 3;
     let offset = 0;
     let changed: boolean = false;
+    const [filters, setFilters] = useState({
+        salary: {
+            from: 0,
+            to: 10000
+        },
+        text: null
+    });
     const [jobs, setJobs] = useState([]);
 
-    const { loading, data, fetchMore, error } = useQuery<JobsResponse>(GET_JOBS, {
-        variables: { offset: offset, limit: limit }, fetchPolicy: 'no-cache', onCompleted(res) {
-            setJobs(res.getJobs.jobs)
+    const { loading, refetch, data, fetchMore, error } = useQuery<JobsResponse>(GET_JOBS, {
+        variables: { offset: offset, limit: limit, filters: { ...filters } }, fetchPolicy: 'no-cache', onCompleted(res) {
+            setJobs(res.getJobsFilters.jobs)
         },
     });
 
@@ -70,7 +77,7 @@ const Jobs = () => {
                             </AccordionButton>
 
                             <AccordionPanel>
-                                <Input placeholder='Enter text here'></Input>
+                                <Input onChange={(e) => { setFilters({ ...filters, text: e.target.value }) }} placeholder='Enter text here'></Input>
                             </AccordionPanel>
                         </AccordionItem>
                     </Accordion>
@@ -86,55 +93,25 @@ const Jobs = () => {
                             </AccordionButton>
 
                             <AccordionPanel>
-                                <Input placeholder='Enter text here'></Input>
-                            </AccordionPanel>
-                        </AccordionItem>
-                    </Accordion>
-
-                    <Accordion defaultIndex={[1]} allowMultiple w='100%'>
-                        <AccordionItem>
-
-                            <AccordionButton w='100%' flex='1'>
-                                <Box flex='1' textAlign='left'>
-                                    Location
-                                </Box>
-                                <AccordionIcon />
-                            </AccordionButton>
-
-                            <AccordionPanel>
-                                <Input placeholder='Enter text here'></Input>
-                            </AccordionPanel>
-                        </AccordionItem>
-                    </Accordion>
-
-                    <Accordion defaultIndex={[1]} allowMultiple w='100%'>
-                        <AccordionItem>
-
-                            <AccordionButton w='100%' flex='1'>
-                                <Box flex='1' textAlign='left'>
-                                    Skills
-                                </Box>
-                                <AccordionIcon />
-                            </AccordionButton>
-
-                            <AccordionPanel>
-                                <Input placeholder='Enter text here'></Input>
-                            </AccordionPanel>
-                        </AccordionItem>
-                    </Accordion>
-
-                    <Accordion defaultIndex={[1]} allowMultiple w='100%'>
-                        <AccordionItem>
-
-                            <AccordionButton w='100%' flex='1'>
-                                <Box flex='1' textAlign='left'>
-                                    Languages
-                                </Box>
-                                <AccordionIcon />
-                            </AccordionButton>
-
-                            <AccordionPanel>
-                                <Input placeholder='Enter text here'></Input>
+                                <HStack>
+                                    <Text><b>From:</b> {filters.salary.from}</Text>
+                                    <Text><b>To:</b> {filters.salary.to}</Text>
+                                </HStack>
+                                <RangeSlider
+                                    min={0}
+                                    max={30000}
+                                    step={500}
+                                    aria-label={['min', 'max']}
+                                    colorScheme='orange'
+                                    defaultValue={[filters.salary.from, filters.salary.to]}
+                                    onChangeEnd={(val) => setFilters({ ...filters, salary: { from: val[0], to: val[1] } })}
+                                >
+                                    <RangeSliderTrack>
+                                        <RangeSliderFilledTrack />
+                                    </RangeSliderTrack>
+                                    <RangeSliderThumb index={0} />
+                                    <RangeSliderThumb index={1} />
+                                </RangeSlider>
                             </AccordionPanel>
                         </AccordionItem>
                     </Accordion>
@@ -151,10 +128,10 @@ const Jobs = () => {
                         !loading && jobs?.length !== 0 && (
                             <InView
                                 onChange={async (inView) => {
-                                    if (limit < data?.getJobs.totalCount) {
+                                    if (limit < data?.getJobsFilters.totalCount) {
                                         limit += limit;
                                     } else {
-                                        limit = data?.getJobs.totalCount
+                                        limit = data?.getJobsFilters.totalCount
                                     }
                                     if (inView) {
                                         const { data, error } = await fetchMore({
@@ -163,9 +140,9 @@ const Jobs = () => {
                                                 limit: limit
                                             }
                                         })
-                                        if (jobs.length < data.getJobs.totalCount) {
+                                        if (jobs.length < data.getJobsFilters.totalCount) {
                                             console.log("UNUTAR IF")
-                                            setJobs([...data?.getJobs.jobs])
+                                            setJobs([...data?.getJobsFilters.jobs])
                                         }
                                     }
                                 }}
@@ -174,11 +151,6 @@ const Jobs = () => {
                     }
                 </VStack>
             </Layout.Mid>
-            <Layout.Right>
-                <Center h='100%' bg='tomato' w='100%'>
-                    JOB PREVIEW
-                </Center>
-            </Layout.Right>
         </Layout>
     )
 }

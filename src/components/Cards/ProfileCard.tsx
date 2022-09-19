@@ -1,6 +1,6 @@
-import { gql, useQuery } from '@apollo/client'
+import { gql, useLazyQuery, useQuery } from '@apollo/client'
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Box, Button, Spinner, Text, VStack } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export interface ProfileCardProps {
@@ -38,11 +38,25 @@ const JOBS_BY_USER = gql`
     }
 `
 
+const JOBS_BY_COMPANY = gql`
+    query JobsByCompany($userId: ID!){
+        jobsByCompany(userId: $userId){
+            id
+            name
+        }
+    }
+`
+
 const ProfileCard: React.FC<ProfileCardProps> = (props: ProfileCardProps) => {
     const navigate = useNavigate();
-    const { data, loading } = useQuery(JOBS_BY_USER, { variables: { userId: props.id }, fetchPolicy: 'cache-and-network' })
+    const { data, loading } = useQuery(JOBS_BY_USER, { variables: { userId: props.id }, fetchPolicy: 'cache-and-network' });
+    const companyJobs = useLazyQuery(JOBS_BY_COMPANY, { variables: { userId: props.id }, fetchPolicy: 'cache-and-network' });
+
+    useEffect(() => {
+        if (props?.userType === 'COMPANY') companyJobs[0]();
+    }, [])
     return (
-        <Box height='500px' width='90%' borderRadius='10px' bg='blackAlpha.200'>
+        <Box height='fit-content' width='90%' borderRadius='10px' bg='blackAlpha.200'>
             <VStack p={7}>
                 <Avatar onClick={() => { navigate('/dashboard/profile/' + props?.id) }} src={props.image} />
                 <Text>{props?.id}</Text>
@@ -60,10 +74,10 @@ const ProfileCard: React.FC<ProfileCardProps> = (props: ProfileCardProps) => {
                             </AccordionButton>
 
                             <AccordionPanel>
-                                <Box display='flex' flexDirection='row' flexWrap='wrap'>
+                                <Box display='flex' flexDirection='row' flexWrap='wrap' justifyContent='space-evenly'>
                                     {
                                         data?.jobsByUser.map((job) => (
-                                            <Button flex='0 1 20%' colorScheme='orange' key={job.id}>{job.name}</Button>
+                                            <Button mt='5px' flex='0 1 30%' colorScheme='orange' key={job.id}>{job.name}</Button>
                                         ))
                                     }
                                 </Box>
@@ -85,8 +99,12 @@ const ProfileCard: React.FC<ProfileCardProps> = (props: ProfileCardProps) => {
                             </AccordionButton>
 
                             <AccordionPanel>
-                                <Box display='flex' flexDirection='row' flexWrap='wrap'>
-                                    aaaa
+                                <Box display='flex' flexDirection='row' flexWrap='wrap' justifyContent='space-between'>
+                                    {
+                                        companyJobs[1].data?.jobsByCompany.map(job => (
+                                            <Button mt='5px' flex='0 1 30%' colorScheme='orange' key={job.id}>{job.name}</Button>
+                                        ))
+                                    }
                                 </Box>
                             </AccordionPanel>
                         </AccordionItem>

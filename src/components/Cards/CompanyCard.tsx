@@ -21,8 +21,8 @@ const CompanyCard = (props: ICompanyCard) => {
             </Box>
             <Box display='flex' justifyContent='space-between' flexDirection='column' flex='1 1 80%' w='100%' p={10}>
                 <Text>{props.description}</Text>
-                <Divider borderColor='orange'></Divider>
-                <HStack justifyContent='space-between'>
+                <Divider mt='auto' borderColor='orange'></Divider>
+                <HStack mt='auto' justifyContent='space-between'>
                     <Text><b>Number of employees:</b> {props.numberOfEmployees}</Text>
                     <Text><b>Type of company:</b> {props.typeOfCompany}</Text>
                 </HStack>

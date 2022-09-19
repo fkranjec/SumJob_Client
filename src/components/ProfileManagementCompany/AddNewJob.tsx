@@ -4,6 +4,7 @@ import { Box, HStack, VStack, Text, Input, Textarea, Select, Divider, Heading, N
 import gql from 'graphql-tag'
 import React, { useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { IProfileShort } from '../../pages/dashboard/Dashboard'
 
 interface INewJob {
@@ -69,7 +70,8 @@ const AddNewJob = (props: INewJob) => {
 
     const handleSave = () => {
         newJob().then(res => {
-            setJob(jobMock);
+            setJob({ ...jobMock });
+            toast.success("Job posted")
         });
 
     }
@@ -80,16 +82,16 @@ const AddNewJob = (props: INewJob) => {
             </HStack>
             <HStack wrap='wrap' gap='10px' p={10}>
                 <Text fontWeight='bold'>Job name</Text>
-                <Input color='black' onChange={(e) => setJob({ ...job, name: e.target.value })} borderColor='grey' _placeholder={{ color: 'grey' }}></Input>
+                <Input color='black' value={job.name} onChange={(e) => setJob({ ...job, name: e.target.value })} borderColor='grey' _placeholder={{ color: 'grey' }}></Input>
                 <Divider />
                 <Heading fontSize='xl'>Content</Heading>
                 <Divider />
                 <Text fontWeight='bold'>Title</Text>
-                <Input color='black' borderColor='grey' onChange={(e) => setJob({ ...job, content: { ...job.content, title: e.target.value } })} _placeholder={{ color: 'grey' }}></Input>
+                <Input color='black' value={job.content.title} borderColor='grey' onChange={(e) => setJob({ ...job, content: { ...job.content, title: e.target.value } })} _placeholder={{ color: 'grey' }}></Input>
                 <Text fontWeight='bold'>Body</Text>
-                <Textarea color='black' borderColor='grey' onChange={(e) => setJob({ ...job, content: { ...job.content, body: e.target.value } })} _placeholder={{ color: 'grey' }}></Textarea>
+                <Textarea color='black' value={job.content.body} borderColor='grey' onChange={(e) => setJob({ ...job, content: { ...job.content, body: e.target.value } })} _placeholder={{ color: 'grey' }}></Textarea>
                 <Text fontWeight='bold'>Footer</Text>
-                <Input color='black' borderColor='grey' onChange={(e) => setJob({ ...job, content: { ...job.content, footer: e.target.value } })} _placeholder={{ color: 'grey' }}></Input>
+                <Input color='black' value={job.content.footer} borderColor='grey' onChange={(e) => setJob({ ...job, content: { ...job.content, footer: e.target.value } })} _placeholder={{ color: 'grey' }}></Input>
                 <Box>
                     <Text fontWeight='bold'>Salary</Text>
                 </Box>
@@ -113,13 +115,15 @@ const AddNewJob = (props: INewJob) => {
                     <RangeSliderThumb index={1} />
                 </RangeSlider>
                 <Text><b>Workers needed</b></Text>
-                <Input type='number' color='black' borderColor='grey' onChange={(e) => setJob({ ...job, workersNeeded: parseInt(e.target.value) })} _placeholder={{ color: 'grey' }}></Input>
+                <Input type='number' value={job.workersNeeded} color='black' borderColor='grey' onChange={(e) => setJob({ ...job, workersNeeded: parseInt(e.target.value) })} _placeholder={{ color: 'grey' }}></Input>
                 <Text><b>Occupation</b></Text>
-                <Input color='black' borderColor='grey' onChange={(e) => setJob({ ...job, occupation: e.target.value })} _placeholder={{ color: 'grey' }}></Input>
+                <Input color='black' value={job.occupation} borderColor='grey' onChange={(e) => setJob({ ...job, occupation: e.target.value })} _placeholder={{ color: 'grey' }}></Input>
                 <Text><b>Date from</b></Text>
                 <Input color='black' borderColor='grey' onChange={(e) => setJob({ ...job, period: { ...job.period, from: new Date(e.target.value) } })} _placeholder={{ color: 'grey' }} type='date'></Input>
                 <Text><b>Date to</b></Text>
                 <Input color='black' borderColor='grey' onChange={(e) => setJob({ ...job, period: { ...job.period, to: new Date(e.target.value) } })} _placeholder={{ color: 'grey' }} type='date'></Input>
+                <Text><b>Valid to</b></Text>
+                <Input color='black' borderColor='grey' onChange={(e) => setJob({ ...job, validTo: new Date(e.target.value) })} _placeholder={{ color: 'grey' }} type='date'></Input>
                 <Button w='100%' ml='100%' onClick={() => handleSave()} colorScheme='orange'>Save</Button>
             </HStack>
         </VStack >

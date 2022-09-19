@@ -12,10 +12,12 @@ interface Register {
     email?: string
     password?: string
     confirmPassword?: string
+    description?: string
     firstName?: string
     lastName?: string
     image?: string
     languages?: string[]
+    address?: any
 }
 
 const REGISTER = gql`
@@ -39,6 +41,18 @@ const Register: React.FunctionComponent<Register> = () => {
         firstName: '',
         lastName: '',
         image: '',
+        description: '',
+        address: {
+            city: '',
+            postalCode: '',
+            street: '',
+            streetNumber: '',
+            state: '',
+            latlng: {
+                lat: 0,
+                lng: 0
+            }
+        },
         languages: []
     });
     const [registerUser, { loading }] = useMutation(REGISTER, {
@@ -111,7 +125,8 @@ const register2UserDetails = (register: Register): IUserDetails => {
 
 const register2PersonalDetails = (register: Register): IPersonalDetails => {
     return {
-
+        address: register.address,
+        description: register.description
     }
 }
 

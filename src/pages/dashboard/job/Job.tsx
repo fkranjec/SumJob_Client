@@ -90,8 +90,7 @@ const Job = () => {
         refetch();
         setUsersApplied((users) => data?.getJob.applied);
         setApplied(checkUsers(data?.getJob.applied, auth.id))
-        console.log(applied);
-        console.log(data);
+
     }, [loading, data])
     return (
         <Layout>
@@ -143,7 +142,7 @@ const Job = () => {
             </Layout.Mid>
             <Layout.Right>
                 <VStack w='100%' ml='20px'>
-                    {data &&
+                    {data?.getJob && !loading &&
                         <Container w='100%' borderRadius='10px' p={0} h='fit-content'>
                             <Map lat={data?.getJob.company.address.latlng.lat} lng={data?.getJob.company.address.latlng.lng} />
                         </Container>

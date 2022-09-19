@@ -1,8 +1,9 @@
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { Text, VStack } from '@chakra-ui/react'
 import gql from 'graphql-tag'
 import React, { useEffect } from 'react'
 import { useOutletContext, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import AddNewJob from '../../../components/ProfileManagementCompany/AddNewJob'
 import CompanyDetails from '../../../components/ProfileManagementCompany/CompanyDetails'
 import CompanyJobs from '../../../components/ProfileManagementCompany/CompanyJobs'
@@ -23,17 +24,30 @@ const GET_COMPANY_JOBS = gql`
     }
 `
 
+const DELETE_JOB = gql`
+    mutation deleteJob($jobId: ID!){
+        deleteJob(jobId: $jobId)
+    }
+`
+
 
 const CompanyProfile = (props: ICompanyProfile) => {
     const { id } = useParams()
     const authContex = useOutletContext<IProfileShort>()
     const { data, loading } = useQuery(GET_COMPANY_JOBS, { variables: { userId: id } })
+    const deleteMutation = useMutation(DELETE_JOB)
 
     const newJob = () => {
 
     }
 
-    const deleteJob = () => {
+    const deleteJob = (jobs: string[]) => {
+        jobs.forEach(job => {
+            console.log(job)
+            deleteMutation["0"]({ variables: { jobId: job } }).then((res) => {
+                toast.success("Job post deleted");
+            })
+        })
 
     }
 

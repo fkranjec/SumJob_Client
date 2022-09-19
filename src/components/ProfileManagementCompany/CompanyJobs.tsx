@@ -13,18 +13,26 @@ interface ICompanyJobs {
 }
 
 
-
 const CompanyJobs = (props: ICompanyJobs) => {
     const { t } = useTranslation('common');
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [jobs, setJobs] = useState([]);
     const [newJob, setNewJob] = useState();
+    const [jobsToDelete, setJobsToDelete] = useState<string[]>([]);
     const navigate = useNavigate();
+
     const handleSave = () => {
-        props.addNewJob(newJob);
+        console.log(jobsToDelete)
+        props.deleteJob(jobsToDelete);
         onClose();
     }
 
+    const handleDelete = (index, id) => {
+        setJobs((jobs) => jobs.filter((lang, idx) => { return idx !== index }));
+        console.log(id);
+        setJobsToDelete([...jobsToDelete, id])
+        console.log(jobsToDelete)
+    }
 
     const handleOpen = async () => {
         onOpen();
@@ -60,8 +68,8 @@ const CompanyJobs = (props: ICompanyJobs) => {
                     <ModalBody>
                         <Box>
                             <HStack wrap='wrap' p={10} gap='10px' justifyContent='flex-start'>
-                                {jobs && jobs.map((job) => (
-                                    <Button key={job.id} ml='8px' p='0px' w='100%' flex='1 1 25%' colorScheme='orange' onClick={() => console.log("DELETE")}>{job.name}</Button>
+                                {jobs && jobs.map((job, index) => (
+                                    <Button key={job.id} ml='8px' p='0px' w='100%' flex='1 1 25%' colorScheme='orange' onClick={() => handleDelete(index, job.id)}>{job.name}</Button>
                                 ))}
                             </HStack>
                         </Box>

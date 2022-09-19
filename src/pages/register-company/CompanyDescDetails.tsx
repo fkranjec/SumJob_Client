@@ -15,7 +15,7 @@ export interface ICompanyDesc {
         city: string,
         street: string,
         streetNumber: string,
-        postalCode: number,
+        postalCode: string,
         latlng: {
             lat: number,
             lng: number
@@ -41,7 +41,7 @@ const CompanyDescDetails = (props: ICompanyDescControls) => {
                     city: place.city,
                     street: place.street,
                     streetNumber: place.streetNumber,
-                    postalCode: parseInt(place.postal_code),
+                    postalCode: place.postalCode,
                     latlng: {
                         lat: searchBox.getPlace().geometry.location.lat(),
                         lng: searchBox.getPlace().geometry.location.lng()
@@ -51,6 +51,7 @@ const CompanyDescDetails = (props: ICompanyDescControls) => {
 
             }
         }
+        console.log(address);
         props.handleChange('address')(address)
     };
     return (
@@ -62,6 +63,9 @@ const CompanyDescDetails = (props: ICompanyDescControls) => {
                 <VStack flex='1 0 50%' fontFamily='sans-serif' p='20' m='auto'>
                     <Heading fontSize='4xl' color='black' fontFamily='sans-serif'>Register</Heading>
                     <Heading fontSize='xl' color='black' fontFamily='sans-serif' >Personal details</Heading>
+                    <Autocomplete onLoad={onLoad} onPlaceChanged={onPlacesChanged}>
+                        <Input ref={searchBox} color='black' borderColor='grey' _placeholder={{ color: 'grey' }} placeholder='Adress' w='auto'></Input>
+                    </Autocomplete>
                     <Textarea color='black' onChange={props.handleChange('description')} placeholder='Tell us something about company' _placeholder={{ color: 'grey' }} borderColor='grey'></Textarea>
                     <Select onChange={props.handleChange('numberOfEmployees')} placeholder='Number of employees'>
                         <option value='1 - 5' key={1}>1 - 5</option>
@@ -71,9 +75,7 @@ const CompanyDescDetails = (props: ICompanyDescControls) => {
                         <option value='41 - 60' key={5}>41 - 60</option>
                         <option value='61 - 100' key={6}>61 - 100</option>
                     </Select>
-                    <Autocomplete onLoad={onLoad} onPlaceChanged={onPlacesChanged}>
-                        <Input ref={searchBox} color='black' borderColor='grey' _placeholder={{ color: 'grey' }} placeholder='Adress' w='auto'></Input>
-                    </Autocomplete>
+
                     <HStack w='100%' display='flex' justifyContent='space-around'>
                         <Button color='black' colorScheme='blue' onClick={props.prevStep}>Previous step!</Button>
                         <Button colorScheme='orange' mb='auto' onClick={props.register}>Register!</Button>

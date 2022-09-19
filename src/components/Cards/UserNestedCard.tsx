@@ -3,6 +3,7 @@ import { Avatar, Box, Button, HStack, Text, VStack } from '@chakra-ui/react'
 import gql from 'graphql-tag'
 import React from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { IProfileShort } from '../../pages/dashboard/Dashboard'
 
 interface IUserNestedCard {
@@ -21,13 +22,15 @@ const CREATE_ROOM = gql`
 const UserNestedCard = (props: IUserNestedCard) => {
     const navigate = useNavigate();
     const authContext = useOutletContext<IProfileShort>()
-    const [createRoom, { data, loading }] = useMutation(CREATE_ROOM, { variables: { roomInput: { userId: props.user.id, companyId: authContext.id } } })
+    const [createRoom, { data, loading }] = useMutation(CREATE_ROOM, { fetchPolicy: 'network-only' })
     const handleStartChat = () => {
         console.log(authContext);
-        createRoom()
-        props.refetch().then(res => {
-            console.log(res);
-        });
+        console.log(props.user.id + " " + authContext.id);
+        createRoom({ variables: { roomInput: { userId: props?.user.id, companyId: authContext.id } } }).then(res => {
+            props.refetch();
+        }).catch(err => {
+            toast.error(err.message)
+        })
     }
     return (
         <HStack w='100%' justifyContent='space-evenly' h='fit-content' bg='blackAlpha.200' p={5} borderRadius='10px'>

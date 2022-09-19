@@ -132,6 +132,7 @@ const Chat = (props: Chat) => {
 
     useEffect(() => {
         if (!loading) {
+            console.log(getRoom.data)
             setTexts(data?.messages.map(msg => {
                 return {
                     id: msg.id,
