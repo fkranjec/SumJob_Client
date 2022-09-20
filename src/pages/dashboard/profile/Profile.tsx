@@ -12,6 +12,7 @@ import UserProfile from './UserProfile';
 
 export interface IProfile {
     getUser: {
+        id?: string
         username: string
         image: string
         email: string

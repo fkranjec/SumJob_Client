@@ -1,4 +1,4 @@
-import { GoogleMap, LoadScript, Marker, useJsApiLoader } from '@react-google-maps/api'
+import { GoogleMap, Marker } from '@react-google-maps/api'
 import React, { useEffect, useState } from 'react'
 
 interface IMap {
@@ -14,7 +14,6 @@ const Map = ({ lat, lng }: IMap) => {
     })
 
     useEffect(() => {
-        console.log(lat);
         setLatLng({ lat: lat, lng: lng })
     }, [lat, lng])
 

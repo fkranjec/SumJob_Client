@@ -15,6 +15,21 @@ interface ICompanyProfile {
     refetch: () => any
 }
 
+const UPDATE_COMPANY = gql`
+    mutation UpdateUser($userId: ID!, $userInput: UserInput) {
+        updateUser(id: $userId, userInput: $userInput) {
+            username
+            id
+            address {
+                city
+            }
+            companyInfo {
+                companyName
+            }
+        }
+    }
+`
+
 const GET_COMPANY_JOBS = gql`
     query JobsByCompany($userId: ID!){
         jobsByCompany(userId: $userId){
@@ -34,8 +49,9 @@ const DELETE_JOB = gql`
 const CompanyProfile = (props: ICompanyProfile) => {
     const { id } = useParams()
     const authContex = useOutletContext<IProfileShort>()
-    const { data, loading } = useQuery(GET_COMPANY_JOBS, { variables: { userId: id } })
+    const { data, loading, refetch } = useQuery(GET_COMPANY_JOBS, { variables: { userId: id } })
     const deleteMutation = useMutation(DELETE_JOB)
+    const updateMutation = useMutation(UPDATE_COMPANY)
 
     const newJob = () => {
 
@@ -51,19 +67,20 @@ const CompanyProfile = (props: ICompanyProfile) => {
 
     }
 
-    const updateCompany = () => {
-
+    const updateCompany = (variables: any) => {
+        console.log(variables)
+        updateMutation["0"]({ variables: { userId: id, userInput: variables } }).then(() => props.refetch())
     }
 
     useEffect(() => {
-        console.log(data)
+        console.log(props.values)
     }, [data, loading])
 
     return (
         <VStack>
-            {data && <CompanyDetails values={{ ...props.values }} editable={authContex.id === id} updateCompany={updateCompany} />}
-            {data && <CompanyJobs jobs={[...data?.jobsByCompany]} editable={authContex.id === id} addNewJob={newJob} deleteJob={deleteJob} />}
-            {data && authContex.id === id && <AddNewJob />}
+            {data && !loading && <CompanyDetails id={id} address={props.values?.getUser?.address} companyInfo={props.values?.getUser?.companyInfo} editable={authContex.id === id} updateCompany={updateCompany} />}
+            {data && !loading && <CompanyJobs jobs={[...data?.jobsByCompany]} editable={authContex.id === id} addNewJob={newJob} deleteJob={deleteJob} />}
+            {data && !loading && authContex.id === id && <AddNewJob refetch={refetch} />}
         </VStack>
     )
 }

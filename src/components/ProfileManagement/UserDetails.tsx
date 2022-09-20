@@ -86,7 +86,7 @@ const UserDetails = (props: IUserDetails) => {
         fetch('http://localhost:5000/upload-avatar', options).then(res => res.json().then((data) => { setUser({ ...user, image: data.url }) }))
         console.log(userData)
         props.updateUser(userData);
-
+        onClose();
     }
 
     useEffect(() => {

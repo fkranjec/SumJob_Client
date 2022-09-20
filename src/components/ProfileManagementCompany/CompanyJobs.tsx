@@ -55,7 +55,7 @@ const CompanyJobs = (props: ICompanyJobs) => {
                 </HStack>
                 <HStack wrap='wrap' p={10} gap='10px' justifyContent='flex-start'>
                     {jobs && jobs.map((job) => (
-                        <Button key={job.id} ml='8px' p='0px' w='100%' flex='1 1 25%' colorScheme='orange' onClick={() => navigate('/dashboard/job/' + job.id)}>{job.name}</Button>
+                        <Button key={job.id} ml='8px' p='20px' w='fit-content' flex='1 1 30%' colorScheme='orange' onClick={() => navigate('/dashboard/job/' + job.id)}>{job.name}</Button>
                     ))}
                 </HStack>
             </VStack>

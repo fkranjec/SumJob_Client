@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 import { IProfileShort } from '../../pages/dashboard/Dashboard'
 
 interface INewJob {
-
+    refetch: () => any
 }
 
 interface JobInput {
@@ -72,6 +72,7 @@ const AddNewJob = (props: INewJob) => {
         newJob().then(res => {
             setJob({ ...jobMock });
             toast.success("Job posted")
+            props.refetch();
         });
 
     }
